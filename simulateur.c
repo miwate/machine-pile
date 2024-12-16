@@ -1,10 +1,35 @@
 #include <stdio.h>
 #include <string.h>
+#define MEM_MAX 5000
 
 typedef struct instruction {
     char code_num;
     int adr_valeur;
 } Instruction;
+
+typedef struct etiquette {
+    char nom_etiq[32];
+    int adr;
+} Etiquette;
+
+Etiquette etiq_list[MEM_MAX];
+int nombre_etiq = 0;
+
+int get_adr_from_etiq(const char *etiquette) {
+    for (int i=0; i<nombre_etiq; i++){
+        if (strcmp(etiq_list[i].nom_etiq, etiquette) == 0) {
+            return etiq_list[i].adr;
+        }
+    }
+    return -1;
+}
+
+void add_etiq(const char *etiquette, int adr){
+    strcpy(etiq_list[nombre_etiq].nom_etiq, etiquette);
+
+    etiq_list[nombre_etiq].adr = adr;
+    nombre_etiq++;
+}
 
 Instruction assembleur(const char instr_assem[], const int valeur) {
     Instruction instr_machine = {-1, valeur};
@@ -80,13 +105,25 @@ int main(int argc, char *argv[]){
             return 1;
         }
         
-        int valeur;
+        char ligne[256];
         int num_ligne = 0;
-        char erreur = 0;
-        char instr_assem[10];
 
+        // voir s'il y a des étiquettes ("ici:, "fin"...) les espaces fonctionnent
+        while (fgets(ligne, sizeof(ligne), input)){
+            num_ligne++;
+            
+            if (strchr(ligne, ':'){
+                char etiquette[64];
+                if (sscanf(ligne, "%63s:", etiquette) == 1){
+                    add_etiq(etiquette, num_ligne);
+                }
+            }
+        }
         
-    
+        int valeur;
+        char erreur = 0;
+
+
         // conversion en assembleur
         while (fscanf(input, "%s %d", instr_assem, &valeur) == 2) {
             num_ligne++;
