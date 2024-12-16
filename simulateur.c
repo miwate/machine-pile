@@ -12,7 +12,7 @@ typedef struct etiquette {
     int adr;
 } Etiquette;
 
-Etiquette etiq_list[MEM_MAX];
+Etiquette etiq_list[512];
 int nombre_etiq = 0;
 
 int get_adr_from_etiq(const char *etiquette) {
@@ -105,7 +105,7 @@ int main(int argc, char *argv[]){
             return 1;
         }
         
-        char ligne[256];
+        char ligne[128];
         int num_ligne = 0;
 
         // voir s'il y a des étiquettes ("ici:, "fin"...) les espaces fonctionnent
@@ -113,16 +113,19 @@ int main(int argc, char *argv[]){
             num_ligne++;
             
             if (strchr(ligne, ':'){
-                char etiquette[64];
-                if (sscanf(ligne, "%63s:", etiquette) == 1){
+                char etiquette[32];
+                if (sscanf(ligne, "%31s:", etiquette) == 1){
                     add_etiq(etiquette, num_ligne);
                 }
             }
         }
         
+        rewind(input);
+        char instr_assem[32];
         int valeur;
         char erreur = 0;
 
+Il faut ajouter les cas où y a une étiquette
 
         // conversion en assembleur
         while (fscanf(input, "%s %d", instr_assem, &valeur) == 2) {
@@ -130,7 +133,6 @@ int main(int argc, char *argv[]){
 
             Instruction instruct = assembleur(instr_assem, valeur);
 
-            // erreur instruction
             if (instruct.code_num == -1) {
                 printf("Erreur - Instruction invalide : %s (ligne %d).\n", instr_assem, num_ligne);
                 erreur = 1;
