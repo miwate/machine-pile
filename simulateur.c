@@ -15,8 +15,8 @@ typedef struct etiquette {
 Etiquette etiq_list[512];
 int nombre_etiq = 0;
 
-int get_adr_from_etiq(const char *etiquette){
-    for (int i=0; i<nombre_etiq; i++){
+int get_adr_from_etiq(const char *etiquette) {
+    for (int i = 0; i < nombre_etiq; i++) {
         if (strcmp(etiq_list[i].nom_etiq, etiquette) == 0) {
             return etiq_list[i].adr;
         }
@@ -24,21 +24,22 @@ int get_adr_from_etiq(const char *etiquette){
     return -1;
 }
 
-void add_etiq(const char *etiquette, int adr){
+void add_etiq(const char *etiquette, int adr) {
     strcpy(etiq_list[nombre_etiq].nom_etiq, etiquette);
     etiq_list[nombre_etiq].adr = adr;
     nombre_etiq++;
 }
 
-void simulateur(const char *input){
+void simulateur(const char *input) {
     FILE *hexa = fopen(input, "r");
-    if (hexa == NULL){
+    if (hexa == NULL) {
         printf("Erreur - Fichier non trouvé : %s.\n", input);
         return;
     }
+    fclose(hexa);
 }
 
-Instruction assembleur(const char instr_assem[], const int valeur){
+Instruction assembleur(const char instr_assem[], const int valeur) {
     Instruction instr_machine = {-1, valeur};
 
     if (strcmp(instr_assem, "pop") == 0) {
@@ -90,50 +91,49 @@ Instruction assembleur(const char instr_assem[], const int valeur){
     return instr_machine;
 }
 
-
-int main(int argc, char *argv[]){
-    if (argc < 2){
+int main(int argc, char *argv[]) {
+    if (argc < 2) {
         printf("Erreur - Aucun argument spécifié. Arrêt du programme.\n");
         return 1;
     }
 
-    for(int i=1; i<argc; i++){
+    for (int i = 1; i < argc; i++) {
         FILE *input = fopen(argv[i], "r");
-        if (input == NULL){
+        if (input == NULL) {
             printf("Erreur - Fichier non trouvé : %s.\n", argv[i]);
             fclose(input);
             return 1;
         }
 
         FILE *output = fopen("hexa.txt", "w");
-        if (output == NULL){
-            printf("Erreur - Écriture impossible : %s.\n");
+        if (output == NULL) {
+            printf("Erreur - Écriture impossible : %s.\n", argv[i]);
             fclose(output);
             return 1;
         }
-        
+
         char ligne[127];
         char erreur = 0;
         int num_ligne = 0;
 
         // Boucle pour étiquettes et traduction (pour éviter de faire 2 boucles)
-        while (fgets(ligne, sizeof(ligne), input)){
+        while (fgets(ligne, sizeof(ligne), input)) {
             num_ligne++;
-            
+
             // Etiquettes
-            if (strchr(ligne, ':')){
+            if (strchr(ligne, ':')) {
                 char etiquette[32];
-                if (sscanf(ligne, "%31s[^:]", etiquette) == 1){
+                if (sscanf(ligne, "%31s[^:]", etiquette) == 1) {
                     add_etiq(etiquette, num_ligne);
                 }
                 continue;
             }
-        
+
             char instr_assem[32];
             int valeur = 0;
 
             // Traduction -> assembleur
-            if (sscanf(ligne, "%31s %d", instr_assem, &valeur) >= 1){
+            if (sscanf(ligne, "%31[^\t] %d", instr_assem, &valeur) >= 1) {
                 Instruction instruct = assembleur(instr_assem, valeur);
 
                 if (instruct.code_num == -1) {
@@ -153,8 +153,8 @@ int main(int argc, char *argv[]){
         }
 
         simulateur("hexa.txt");
-
     }
 
     return 0;
+    }
 }
