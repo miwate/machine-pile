@@ -134,7 +134,10 @@ int main(int argc, char *argv[]) {
             int valeur = 0;
 
             // Traduction -> assembleur
-            if (sscanf(ligne, "%31s %d", instr_assem, &valeur) >= 1) {
+            LALALA FAUT AJOUTER UN TRUC POUR LES ADRESSES DES ETIQUETTES
+
+            
+            if (sscanf(ligne, "%31s %d", instr_assem, &valeur) > 1) {
                 printf("%s - %d\n",instr_assem, valeur);
                 Instruction instruct = assembleur(instr_assem, valeur);
 
