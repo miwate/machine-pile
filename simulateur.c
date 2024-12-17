@@ -121,7 +121,7 @@ int main(int argc, char *argv[]){
             num_ligne++;
             
             // Etiquettes
-            if (strchr(ligne, ':'){
+            if (strchr(ligne, ':')){
                 char etiquette[32];
                 if (sscanf(ligne, "%31s[^:]", etiquette) == 1){
                     add_etiq(etiquette, num_ligne);
