@@ -134,7 +134,7 @@ int main(int argc, char *argv[]) {
             int valeur = 0;
 
             // Traduction -> assembleur
-            LALALA FAUT AJOUTER UN TRUC POUR LES ADRESSES DES ETIQUETTES
+            LALALA FAUT AJOUTER UN TRUC POUR LES ADRESSES DES ETIQUETTES, faut peut-être faire deux boucles au fina
 
             
             if (sscanf(ligne, "%31s %d", instr_assem, &valeur) > 1) {
