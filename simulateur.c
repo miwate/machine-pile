@@ -118,12 +118,13 @@ int main(int argc, char *argv[]) {
 
         // Boucle pour étiquettes et traduction (pour éviter de faire 2 boucles)
         while (fgets(ligne, sizeof(ligne), input)) {
-            num_ligne++;
+        num_ligne++;
 
             // Etiquettes
             if (strchr(ligne, ':')) {
                 char etiquette[32];
                 if (sscanf(ligne, "%31s[^:]", etiquette) == 1) {
+                    printf("etiquette- %s\n",etiquette);
                     add_etiq(etiquette, num_ligne);
                 }
                 continue;
@@ -133,7 +134,8 @@ int main(int argc, char *argv[]) {
             int valeur = 0;
 
             // Traduction -> assembleur
-            if (sscanf(ligne, "%31[^\t] %d", instr_assem, &valeur) >= 1) {
+            if (sscanf(ligne, "%31s %d", instr_assem, &valeur) >= 1) {
+                printf("%s - %d\n",instr_assem, valeur);
                 Instruction instruct = assembleur(instr_assem, valeur);
 
                 if (instruct.code_num == -1) {
@@ -143,12 +145,14 @@ int main(int argc, char *argv[]) {
                 }
                 fprintf(output, "%02x %04x\n", instruct.code_num, instruct.adr_valeur);
             }
+        }
 
         fclose(input);
         fclose(output);
 
         if (erreur) {
-            remove("hexa.txt");
+            //remove("hexa.txt");
+            printf("Arrêt.\n");
             return 1;
         }
 
@@ -156,5 +160,4 @@ int main(int argc, char *argv[]) {
     }
 
     return 0;
-    }
 }
