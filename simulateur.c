@@ -143,7 +143,6 @@ int main(int argc, char *argv[]){
                 }
                 fprintf(output, "%02x %04x\n", instruct.code_num, instruct.adr_valeur);
             }
-        }
 
         fclose(input);
         fclose(output);
