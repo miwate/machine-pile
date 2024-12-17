@@ -105,47 +105,43 @@ int main(int argc, char *argv[]){
             return 1;
         }
         
-        char ligne[128];
+        char ligne[127];
+        char erreur = 0;
         int num_ligne = 0;
 
-        // voir s'il y a des étiquettes ("ici:, "fin"...) les espaces fonctionnent
+        // Boucle pour étiquettes et traduction (pour éviter de faire 2 boucles)
         while (fgets(ligne, sizeof(ligne), input)){
             num_ligne++;
             
+            // Etiquettes
             if (strchr(ligne, ':'){
                 char etiquette[32];
-                if (sscanf(ligne, "%31s:", etiquette) == 1){
+                if (sscanf(ligne, "%31s[^:]", etiquette) == 1){
                     add_etiq(etiquette, num_ligne);
                 }
+                continue;
             }
-        }
         
-        rewind(input);
-        char instr_assem[32];
-        int valeur;
-        char erreur = 0;
+            char instr_assem[32];
+            int valeur = 0;
 
-Il faut ajouter les cas où y a une étiquette
+            // Traduction -> assembleur
+            if (sscanf(ligne, "%31s %d", instr_assem, &valeur) >= 1){
+                Instruction instruct = assembleur(instr_assem, valeur);
 
-        // conversion en assembleur
-        while (fscanf(input, "%s %d", instr_assem, &valeur) == 2) {
-            num_ligne++;
-
-            Instruction instruct = assembleur(instr_assem, valeur);
-
-            if (instruct.code_num == -1) {
-                printf("Erreur - Instruction invalide : %s (ligne %d).\n", instr_assem, num_ligne);
-                erreur = 1;
-                break;
+                if (instruct.code_num == -1) {
+                    printf("Erreur - Instruction invalide : %s (ligne %d).\n", instr_assem, num_ligne);
+                    erreur = 1;
+                    break;
+                }
+                fprintf(output, "%02x %04x\n", instruct.code_num, instruct.adr_valeur);
             }
-            fprintf(output, "%02x %04x\n", instruct.code_num, instruct.adr_valeur);
         }
 
         fclose(input);
         fclose(output);
 
         if (erreur) {
-            // supression du fichier
             remove("hexa.txt");
             return 1;
         }
