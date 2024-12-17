@@ -15,7 +15,7 @@ typedef struct etiquette {
 Etiquette etiq_list[512];
 int nombre_etiq = 0;
 
-int get_adr_from_etiq(const char *etiquette) {
+int get_adr_from_etiq(const char *etiquette){
     for (int i=0; i<nombre_etiq; i++){
         if (strcmp(etiq_list[i].nom_etiq, etiquette) == 0) {
             return etiq_list[i].adr;
@@ -26,12 +26,19 @@ int get_adr_from_etiq(const char *etiquette) {
 
 void add_etiq(const char *etiquette, int adr){
     strcpy(etiq_list[nombre_etiq].nom_etiq, etiquette);
-
     etiq_list[nombre_etiq].adr = adr;
     nombre_etiq++;
 }
 
-Instruction assembleur(const char instr_assem[], const int valeur) {
+void simulateur(const char *input){
+    FILE *hexa = fopen(input, "r");
+    if (hexa == NULL){
+        printf("Erreur - Fichier non trouvé : %s.\n", input);
+        return;
+    }
+}
+
+Instruction assembleur(const char instr_assem[], const int valeur){
     Instruction instr_machine = {-1, valeur};
 
     if (strcmp(instr_assem, "pop") == 0) {
