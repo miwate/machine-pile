@@ -2,7 +2,7 @@
 #include <string.h>
 #include <stdint.h>
 #include <inttypes.h>
-
+#include <stdlib.h>  // poru générer aléatoirement randx()
 #define MEM_MAX 5000
 
 typedef struct instruction {
@@ -250,8 +250,6 @@ int main(int argc, char *argv[]) {
 }
 
 
-#include <stdio.h>
-#include <stdlib.h>  // poru générer aléatoirement randx()
 int SP=0;
 int PC=0;
 
@@ -349,6 +347,9 @@ void dup(Machine *donnee){
     donnee->SP++; 
 
 }
+
+
+
 	
 
 
