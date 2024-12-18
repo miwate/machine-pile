@@ -291,6 +291,14 @@ void ipush(Machine *donnee){
 
 }
 
-void push
+
+void pushi(int i,Machine *donnee){
+	donnee->PiletableauSP[donnee->SP-1]=i
+	donnee->SP = donnee->SP+1;
+
+}
+
+
+
 
 
