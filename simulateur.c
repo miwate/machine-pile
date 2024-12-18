@@ -248,3 +248,49 @@ int main(int argc, char *argv[]) {
 
     return 0;
 }
+
+
+
+
+int SP=0;
+int PC=0;
+
+
+// est-ce que x est bien <5000 ? fait par la conversion ?
+
+
+struct machine{
+	int SP;
+	int PC;
+	int PiletableauSP[]
+}
+typedef struct machine Machine;
+
+void pop(int x,Machine *donnee){
+	donnee->SP--;          // valide si on a fait attention à ce que la pile soit non vide
+	donnee->PiletableauSP[x]=donnee->Piletableau[donnee->SP];
+}
+ 
+ 
+void ipop(Machine *donnee){
+	int adr = donnee->PiletableauSP[donnee->SP-1];
+	int valeur = donnee->PiletableauSP[donnee->SP-2];
+	donnee->PiletableauSP[adr]= valeur ;
+	donnee->SP -= 2;
+}
+
+void push(int x,Machine *donnee){       // il faut verifier si il reste des emplacements libre ou non
+	donnee->PiletableauSP[donnee->SP]=donnee->PiletableauSP[x];    // pas de soucis comme dans ipop car pas d'opérations
+	donnee->SP=donnee->SP+1;
+}
+
+void ipush(Machine *donnee){
+	int x;
+	x=donnee->PiletableauSP[donnee->SP-1];
+	donnee->PiletableauSP[donnee->SP-1]=x;      // !! on peut pas faire les deux dernière lignes en une seule
+
+}
+
+void push
+
+
