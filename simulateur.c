@@ -163,7 +163,7 @@ int main(int argc, char *argv[]) {
                     break;
                 }
 
-                fprintf(output, "%02x %04x\n", instruct.code_num, instruct.adr_valeur);
+                fprintf(output, "%02x %04x\n", instruct.code_num, instruct.adr_valeur & 0xFFFF);
             }
 
             // F2 Cas étiquette instruction valeur
@@ -176,7 +176,7 @@ int main(int argc, char *argv[]) {
                     erreur = 1;
                     break;
                 }
-                fprintf(output, "%02x %04x\n", instruct.code_num, instruct.adr_valeur);
+                fprintf(output, "%02x %04x\n", instruct.code_num, instruct.adr_valeur & 0xFFFF);
 
             }
 
@@ -191,7 +191,7 @@ int main(int argc, char *argv[]) {
                     erreur = 1;
                     break;
                 }
-                fprintf(output, "%02x %04x\n", instruct.code_num, instruct.adr_valeur);
+                fprintf(output, "%02x %04x\n", instruct.code_num, instruct.adr_valeur & 0xFFFF);
 
             }
 
@@ -207,7 +207,7 @@ int main(int argc, char *argv[]) {
                     erreur = 1;
                     break;
                 }
-                fprintf(output, "%02x %04x\n", instruct.code_num, instruct.adr_valeur);
+                fprintf(output, "%02x %04x\n", instruct.code_num, instruct.adr_valeur & 0xFFFF);
 
                 //fprintf(output, "C : %s - %s - %s\n", etiquette, instr_assem, etiquette2);
             }
@@ -229,7 +229,7 @@ int main(int argc, char *argv[]) {
                     erreur = 1;
                     break;
                 }
-                fprintf(output, "%02x %04x\n", instruct.code_num, instruct.adr_valeur);
+                fprintf(output, "%02x %04x\n", instruct.code_num, instruct.adr_valeur & 0xFFFF);
 
                 //fprintf(output, "C : %s - %s\n", instr_assem, etiquette2);
             
