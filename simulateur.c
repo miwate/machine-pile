@@ -1,24 +1,29 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdint.h>
+#include <inttypes.h>
+
 #define MEM_MAX 5000
 
 typedef struct instruction {
     char code_num;
-    int adr_valeur;
+    int16_t adr_valeur;
 } Instruction;
 
 typedef struct etiquette {
     char nom_etiq[32];
-    int adr;
+    int16_t ligne;
 } Etiquette;
 
 Etiquette etiq_list[512];
 int nombre_etiq = 0;
 
-int get_adr_from_etiq(const char *etiquette) {
+int16_t get_ligne_from_etiq(const char *etiquette) {
     for (int i = 0; i < nombre_etiq; i++) {
         if (strcmp(etiq_list[i].nom_etiq, etiquette) == 0) {
-            return etiq_list[i].adr;
+
+            printf("D : %s - %d\n", etiq_list[i].nom_etiq, etiq_list[i].ligne);
+            return etiq_list[i].ligne;
         }
     }
     return -1;
@@ -26,7 +31,7 @@ int get_adr_from_etiq(const char *etiquette) {
 
 void add_etiq(const char *etiquette, int adr) {
     strcpy(etiq_list[nombre_etiq].nom_etiq, etiquette);
-    etiq_list[nombre_etiq].adr = adr;
+    etiq_list[nombre_etiq].ligne = adr;
     nombre_etiq++;
 }
 
@@ -39,7 +44,7 @@ void simulateur(const char *input) {
     fclose(hexa);
 }
 
-Instruction assembleur(const char instr_assem[], const int valeur) {
+Instruction assembleur(const char instr_assem[], const int16_t valeur) {
     Instruction instr_machine = {-1, valeur};
 
     if (strcmp(instr_assem, "pop") == 0) {
@@ -114,31 +119,42 @@ int main(int argc, char *argv[]) {
 
         char ligne[127];
         char erreur = 0;
-        int num_ligne = 0;
+        int16_t num_ligne = 0;
 
-        // Boucle pour étiquettes et traduction (pour éviter de faire 2 boucles)
         while (fgets(ligne, sizeof(ligne), input)) {
-        num_ligne++;
+            num_ligne++;
 
             // Etiquettes
             if (strchr(ligne, ':')) {
                 char etiquette[32];
                 if (sscanf(ligne, "%31s[^:]", etiquette) == 1) {
-                    printf("etiquette- %s\n",etiquette);
+
+                    //printf("etiquette- %s\n",etiquette);
                     add_etiq(etiquette, num_ligne);
+
+                    //printf("A : %s - %d\n", etiquette, num_ligne);
                 }
                 continue;
             }
+        }
 
-            char instr_assem[32];
-            int valeur = 0;
+        char instr_assem[32];
+        char etiquette[32];
+        char etiquette2[32];
+        int16_t valeur = 0;
 
-            // Traduction -> assembleur
-            LALALA FAUT AJOUTER UN TRUC POUR LES ADRESSES DES ETIQUETTES, faut peut-être faire deux boucles au fina
+        //LALALA FAUT AJOUTER UN TRUC POUR LES ADRESSES DES ETIQUETTES, faut peut-être faire deux boucles au fina
 
-            
-            if (sscanf(ligne, "%31s %d", instr_assem, &valeur) > 1) {
-                printf("%s - %d\n",instr_assem, valeur);
+        rewind(input);
+        num_ligne = 0;
+
+        while (fgets(ligne, sizeof(ligne), input)) {
+            num_ligne++;
+
+            // F1 Cas instruction valeur
+            if (sscanf(ligne, "%31s %" SCNd16, instr_assem, &valeur) == 2) {
+
+                //printf("%s - %d\n",instr_assem, valeur);
                 Instruction instruct = assembleur(instr_assem, valeur);
 
                 if (instruct.code_num == -1) {
@@ -146,8 +162,78 @@ int main(int argc, char *argv[]) {
                     erreur = 1;
                     break;
                 }
+
                 fprintf(output, "%02x %04x\n", instruct.code_num, instruct.adr_valeur);
             }
+
+            // F2 Cas étiquette instruction valeur
+            else if (sscanf(ligne, "%31[^:]: %31s %" SCNd16, etiquette, instr_assem, &valeur) == 3) {
+
+                //fprintf(output, "B : %s - %d\n", etiquette, valeur);
+                Instruction instruct = assembleur(instr_assem, valeur); 
+                if (instruct.code_num == -1) {
+                    printf("Erreur - Instruction invalide : %s (ligne %d).\n", instr_assem, num_ligne);
+                    erreur = 1;
+                    break;
+                }
+                fprintf(output, "%02x %04x\n", instruct.code_num, instruct.adr_valeur);
+
+            }
+
+            // F3 Cas étiquette instruction (ipop, ipush, dup, halt)
+            else if (sscanf(ligne, "%31[^:]: %31s", etiquette, instr_assem) == 2) {
+
+                //fprintf(output, "C : %s - %s\n", etiquette, instr_assem);
+                Instruction instruct = assembleur(instr_assem, 0); 
+
+                if (instruct.code_num == -1) {
+                    printf("Erreur - Instruction invalide : %s (ligne %d).\n", instr_assem, num_ligne);
+                    erreur = 1;
+                    break;
+                }
+                fprintf(output, "%02x %04x\n", instruct.code_num, instruct.adr_valeur);
+
+            }
+
+            // F4 Cas étiquette instruction étiquette
+            else if (sscanf(ligne, "%31[^:]: %31s %31s", etiquette, instr_assem, etiquette2) == 3) {
+
+                valeur = get_ligne_from_etiq(etiquette2);
+                valeur = valeur - num_ligne -1;
+                Instruction instruct = assembleur(instr_assem, valeur); 
+
+                if (instruct.code_num == -1) {
+                    printf("Erreur - Instruction invalide : %s (ligne %d).\n", instr_assem, num_ligne);
+                    erreur = 1;
+                    break;
+                }
+                fprintf(output, "%02x %04x\n", instruct.code_num, instruct.adr_valeur);
+
+                //fprintf(output, "C : %s - %s - %s\n", etiquette, instr_assem, etiquette2);
+            }
+
+            // F5 Cas instruction étiquette
+            else if (sscanf(ligne, "%31s %31s", instr_assem, etiquette2) == 2) {
+
+// AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+
+                valeur = get_ligne_from_etiq(etiquette2);
+                //printf("% " SCNd16 , valeur);
+                printf("num_ligne: %d\n" , num_ligne);
+                valeur = valeur - num_ligne -1;
+
+                Instruction instruct = assembleur(instr_assem, valeur); 
+                
+                if (instruct.code_num == -1) {
+                    printf("Erreur - Instruction invalide : %s (ligne %d).\n", instr_assem, num_ligne);
+                    erreur = 1;
+                    break;
+                }
+                fprintf(output, "%02x %04x\n", instruct.code_num, instruct.adr_valeur);
+
+                //fprintf(output, "C : %s - %s\n", instr_assem, etiquette2);
+            
+            }                     
         }
 
         fclose(input);
