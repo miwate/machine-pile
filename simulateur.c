@@ -348,7 +348,7 @@ void dup(Machine *donnee){
 
 }
 
-
+// pour les erreurs de débordement , on peut regrouper les cas, vérifier si pour les fonctions où l'on pile on déborde et où on dépile, la pile est trop petite
 
 	
 
