@@ -127,7 +127,7 @@ int main(int argc, char *argv[]) {
             // Etiquettes
             if (strchr(ligne, ':')) {
                 char etiquette[32];
-                if (sscanf(ligne, "%31s[^:]", etiquette) == 1) {
+                if (sscanf(ligne, "%31s : ", etiquette) == 1 || sscanf(ligne, "%31[^:]:", etiquette) == 1) {
 
                     //printf("etiquette- %s\n",etiquette);
                     add_etiq(etiquette, num_ligne);
@@ -167,7 +167,7 @@ int main(int argc, char *argv[]) {
             }
 
             // F2 Cas étiquette instruction valeur
-            else if (sscanf(ligne, "%31[^:]: %31s %" SCNd16, etiquette, instr_assem, &valeur) == 3) {
+            else if (sscanf(ligne, "%31[^:]: %31s %" SCNd16, etiquette, instr_assem, &valeur) == 3 || sscanf(ligne, "%31s : %31s %" SCNd16, etiquette, instr_assem, &valeur) == 3) {
 
                 //fprintf(output, "B : %s - %d\n", etiquette, valeur);
                 Instruction instruct = assembleur(instr_assem, valeur); 
@@ -181,7 +181,7 @@ int main(int argc, char *argv[]) {
             }
 
             // F3 Cas étiquette instruction (ipop, ipush, dup, halt)
-            else if (sscanf(ligne, "%31[^:]: %31s", etiquette, instr_assem) == 2) {
+            else if (sscanf(ligne, "%31[^:]: %31s", etiquette, instr_assem) == 2 || sscanf(ligne, "%31s : %31s", etiquette, instr_assem) == 2) {
 
                 //fprintf(output, "C : %s - %s\n", etiquette, instr_assem);
                 Instruction instruct = assembleur(instr_assem, 0); 
@@ -196,7 +196,7 @@ int main(int argc, char *argv[]) {
             }
 
             // F4 Cas étiquette instruction étiquette
-            else if (sscanf(ligne, "%31[^:]: %31s %31s", etiquette, instr_assem, etiquette2) == 3) {
+            else if (sscanf(ligne, "%31[^:]: %31s %31s", etiquette, instr_assem, etiquette2) == 3 || sscanf(ligne, "%31s : %31s %31s", etiquette, instr_assem, etiquette2) == 3) {
 
                 valeur = get_ligne_from_etiq(etiquette2);
                 valeur = valeur - num_ligne -1;
@@ -214,8 +214,6 @@ int main(int argc, char *argv[]) {
 
             // F5 Cas instruction étiquette
             else if (sscanf(ligne, "%31s %31s", instr_assem, etiquette2) == 2) {
-
-// AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 
                 valeur = get_ligne_from_etiq(etiquette2);
                 //printf("% " SCNd16 , valeur);
@@ -240,7 +238,7 @@ int main(int argc, char *argv[]) {
         fclose(output);
 
         if (erreur) {
-            //remove("hexa.txt");
+            remove("hexa.txt");
             printf("Arrêt.\n");
             return 1;
         }
