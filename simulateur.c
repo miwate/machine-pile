@@ -250,8 +250,8 @@ int main(int argc, char *argv[]) {
 }
 
 
-
-
+#include <stdio.h>
+#include <stdlib.h>  // poru générer aléatoirement randx()
 int SP=0;
 int PC=0;
 
@@ -297,6 +297,67 @@ void pushi(int i,Machine *donnee){
 	donnee->SP = donnee->SP+1;
 
 }
+
+void jmpadr(int adr,Machine *donnee){
+	donnee->PC+=adr;      						// faire attention à si adr sort de la pile ou pas
+}
+
+void jnzadr(int adr,Machine *donnee){
+	donnee->SP--;								// faire attention à si adr sort de la pile ou pas
+	if donnee->PiletableauSP[donnee->SP] !=0{
+		donnee->PC+=adr;
+	}
+}
+
+void calladr(int adr,Machine *donnee){
+	donnee->PiletableauSP[donnee->SP]=donnee->PC;   // faire attention à si adr sort de la pile ou pas
+	donnee->SP++;
+
+
+}
+
+void ret(Machine *donnee){
+	donnee->SP--;
+	donnee->PC=donnee->PiletableauSP[donnee->SP]; //attention si pile vide
+	
+
+}
+
+void read(int x , Machine *donnee){
+	printf("Entrez une valeur pour l'adresse %d : ",x);
+	scanf("%d",&(donne->PiletableauSP[x]))
+}
+
+void write(int x , Machine *donnee){
+	printf("valeur de la variable à l'adresse%d : %d ", x,donnee->PiletableauSP[x])
+	
+}
+
+void randx(int x ,Machine *donnee){
+	 if x <= 0 {
+        printf("Erreur : limite invalide ");  //on ne peut pas prendre en nombre aléatoire entre 0 et négatif
+        return;
+    }
+	int valalea = rand()% x;
+	donnee->PiletableauSP[donnee->SP] = valalea;
+    donnee->SP++;
+
+}
+
+void dup(Machine *donnee){
+	donnee->PiletableauSP[donnee->SP] = donnee->PiletableauSP[donnee->SP - 1]; //attention si pile vide
+    donnee->SP++; 
+
+}
+	
+
+
+
+
+
+
+
+
 
 
 
