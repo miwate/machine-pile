@@ -96,6 +96,108 @@ Instruction assembleur(const char instr_assem[], const int16_t valeur) {
     return instr_machine;
 }
 
+int SP=0;
+int PC=0;
+
+
+// est-ce que x est bien <5000 ? fait par la conversion ?
+
+
+struct machine{
+	int SP;
+	int PC;
+	int PiletableauSP[]
+}
+typedef struct machine Machine;
+
+void pop(int x,Machine *donnee){
+	donnee->SP--;          // valide si on a fait attention à ce que la pile soit non vide
+	donnee->PiletableauSP[x]=donnee->Piletableau[donnee->SP];
+}
+ 
+ 
+void ipop(Machine *donnee){
+	int adr = donnee->PiletableauSP[donnee->SP-1];
+	int valeur = donnee->PiletableauSP[donnee->SP-2];
+	donnee->PiletableauSP[adr]= valeur ;
+	donnee->SP -= 2;
+}
+
+void push(int x,Machine *donnee){       // il faut verifier si il reste des emplacements libre ou non
+	donnee->PiletableauSP[donnee->SP]=donnee->PiletableauSP[x];    // pas de soucis comme dans ipop car pas d'opérations
+	donnee->SP=donnee->SP+1;
+}
+
+void ipush(Machine *donnee){
+	int x;
+	x=donnee->PiletableauSP[donnee->SP-1];
+	donnee->PiletableauSP[donnee->SP-1]=x;      // !! on peut pas faire les deux dernière lignes en une seule
+
+}
+
+
+void pushi(int i,Machine *donnee){
+	donnee->PiletableauSP[donnee->SP-1]=i
+	donnee->SP = donnee->SP+1;
+
+}
+
+void jmpadr(int adr,Machine *donnee){
+	donnee->PC+=adr;      						// faire attention à si adr sort de la pile ou pas
+}
+
+void jnzadr(int adr,Machine *donnee){
+	donnee->SP--;								// faire attention à si adr sort de la pile ou pas
+	if donnee->PiletableauSP[donnee->SP] !=0{
+		donnee->PC+=adr;
+	}
+}
+
+void calladr(int adr,Machine *donnee){
+	donnee->PiletableauSP[donnee->SP]=donnee->PC;   // faire attention à si adr sort de la pile ou pas
+	donnee->SP++;
+
+
+}
+
+void ret(Machine *donnee){
+	donnee->SP--;
+	donnee->PC=donnee->PiletableauSP[donnee->SP]; //attention si pile vide
+	
+
+}
+
+void read(int x , Machine *donnee){
+	printf("Entrez une valeur pour l'adresse %d : ",x);
+	scanf("%d",&(donne->PiletableauSP[x]))
+}
+
+void write(int x , Machine *donnee){
+	printf("valeur de la variable à l'adresse%d : %d ", x,donnee->PiletableauSP[x])
+	
+}
+
+void randx(int x ,Machine *donnee){
+	 if x <= 0 {
+        printf("Erreur : limite invalide ");  //on ne peut pas prendre en nombre aléatoire entre 0 et négatif
+        return;
+    }
+	int valalea = rand()% x;
+	donnee->PiletableauSP[donnee->SP] = valalea;
+    donnee->SP++;
+
+}
+
+void dup(Machine *donnee){
+	donnee->PiletableauSP[donnee->SP] = donnee->PiletableauSP[donnee->SP - 1]; //attention si pile vide
+    donnee->SP++; 
+
+}
+
+// pour les erreurs de débordement , on peut regrouper les cas, vérifier si pour les fonctions où l'on pile on déborde et où on dépile, la pile est trop petite
+
+	
+
 int main(int argc, char *argv[]) {
     if (argc < 2) {
         printf("Erreur - Aucun argument spécifié. Arrêt du programme.\n");
@@ -248,110 +350,6 @@ int main(int argc, char *argv[]) {
 
     return 0;
 }
-
-
-int SP=0;
-int PC=0;
-
-
-// est-ce que x est bien <5000 ? fait par la conversion ?
-
-
-struct machine{
-	int SP;
-	int PC;
-	int PiletableauSP[]
-}
-typedef struct machine Machine;
-
-void pop(int x,Machine *donnee){
-	donnee->SP--;          // valide si on a fait attention à ce que la pile soit non vide
-	donnee->PiletableauSP[x]=donnee->Piletableau[donnee->SP];
-}
- 
- 
-void ipop(Machine *donnee){
-	int adr = donnee->PiletableauSP[donnee->SP-1];
-	int valeur = donnee->PiletableauSP[donnee->SP-2];
-	donnee->PiletableauSP[adr]= valeur ;
-	donnee->SP -= 2;
-}
-
-void push(int x,Machine *donnee){       // il faut verifier si il reste des emplacements libre ou non
-	donnee->PiletableauSP[donnee->SP]=donnee->PiletableauSP[x];    // pas de soucis comme dans ipop car pas d'opérations
-	donnee->SP=donnee->SP+1;
-}
-
-void ipush(Machine *donnee){
-	int x;
-	x=donnee->PiletableauSP[donnee->SP-1];
-	donnee->PiletableauSP[donnee->SP-1]=x;      // !! on peut pas faire les deux dernière lignes en une seule
-
-}
-
-
-void pushi(int i,Machine *donnee){
-	donnee->PiletableauSP[donnee->SP-1]=i
-	donnee->SP = donnee->SP+1;
-
-}
-
-void jmpadr(int adr,Machine *donnee){
-	donnee->PC+=adr;      						// faire attention à si adr sort de la pile ou pas
-}
-
-void jnzadr(int adr,Machine *donnee){
-	donnee->SP--;								// faire attention à si adr sort de la pile ou pas
-	if donnee->PiletableauSP[donnee->SP] !=0{
-		donnee->PC+=adr;
-	}
-}
-
-void calladr(int adr,Machine *donnee){
-	donnee->PiletableauSP[donnee->SP]=donnee->PC;   // faire attention à si adr sort de la pile ou pas
-	donnee->SP++;
-
-
-}
-
-void ret(Machine *donnee){
-	donnee->SP--;
-	donnee->PC=donnee->PiletableauSP[donnee->SP]; //attention si pile vide
-	
-
-}
-
-void read(int x , Machine *donnee){
-	printf("Entrez une valeur pour l'adresse %d : ",x);
-	scanf("%d",&(donne->PiletableauSP[x]))
-}
-
-void write(int x , Machine *donnee){
-	printf("valeur de la variable à l'adresse%d : %d ", x,donnee->PiletableauSP[x])
-	
-}
-
-void randx(int x ,Machine *donnee){
-	 if x <= 0 {
-        printf("Erreur : limite invalide ");  //on ne peut pas prendre en nombre aléatoire entre 0 et négatif
-        return;
-    }
-	int valalea = rand()% x;
-	donnee->PiletableauSP[donnee->SP] = valalea;
-    donnee->SP++;
-
-}
-
-void dup(Machine *donnee){
-	donnee->PiletableauSP[donnee->SP] = donnee->PiletableauSP[donnee->SP - 1]; //attention si pile vide
-    donnee->SP++; 
-
-}
-
-// pour les erreurs de débordement , on peut regrouper les cas, vérifier si pour les fonctions où l'on pile on déborde et où on dépile, la pile est trop petite
-
-	
-
 
 
 
