@@ -47,4 +47,7 @@
     /* Supprime les espaces et tabulations d'une étiquette mais garde la ligne intacte */
     void tondre_etiq_ligne(char *ligne);
 
+    /* Si la ligne est vide, renvoie 1, sinon 0 */
+    int ligne_est_vide(char *ligne);
+
 #endif

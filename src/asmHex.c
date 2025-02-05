@@ -162,6 +162,17 @@ void tondre_etiq_ligne(char *ligne)
     ligne[j] = '\0';
 }
 
+/* Si la ligne est vide, renvoie 1, sinon 0 */
+int ligne_est_vide(char *ligne)
+{
+    while (*ligne)
+    {
+        if (*ligne != '\n' && *ligne != ' ' && *ligne != '\t') return 0;
+        ligne++;
+    }
+    return 1;
+}
+
 /* Lit le fichier et trouve les étiquettes d'un code assembleur et empile dans l'assembleur */
 void trouve_etiquettes(AsmHex *assembleur, const char *_fichier)
 {
@@ -178,6 +189,9 @@ void trouve_etiquettes(AsmHex *assembleur, const char *_fichier)
 
     while (fgets(ligne, sizeof(ligne), fichier))
     {
+        /* Passe à la ligne suivant si la ligne est vide */
+        if (ligne_est_vide(ligne) == 1) continue;
+
         num_ligne++;
 
         if (strchr(ligne, ':'))
@@ -241,6 +255,9 @@ void asmVersHex(AsmHex *assembleur, const char *_fichierAsm)
 
     while (fgets(ligne, sizeof(ligne), fichier))
     {
+        
+        /* Passe à la ligne suivant si la ligne est vide */
+        if (ligne_est_vide(ligne) == 1) continue;
 
         /* Supprime les espaces/tabulations d'une étiquette peu importe le nombre */
         tondre_etiq_ligne(ligne);
