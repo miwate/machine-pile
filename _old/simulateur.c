@@ -96,6 +96,8 @@ Instruction assembleur(const char instr_assem[], const int16_t valeur) {
     return instr_machine;
 }
 
+/* Nan par contre tu te fous de ma gueule ton code est horrible ça compile même pas c'est pas les bons noms de variables et il manque des ; partout */
+
 int SP=0;
 int PC=0;
 
