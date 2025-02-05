@@ -11,7 +11,6 @@
     typedef struct instructionHex {
         int code_num;
         int adr_valeur;
-        struct instructionHex* next;
     } InstructionHex;
 
     typedef struct etiquette {
@@ -23,7 +22,6 @@
     /* On va l'appeler assembleur ensuite */
     typedef struct asmHex {
         struct etiquette* etiquettes;
-        struct instructionHex* instructions;
     } AsmHex ;
     
 
@@ -49,5 +47,8 @@
 
     /* Si la ligne est vide, renvoie 1, sinon 0 */
     int ligne_est_vide(char *ligne);
+
+    /* Libère la mémoire de l'assembleur */
+    void free_asm(AsmHex *assembleur);
 
 #endif

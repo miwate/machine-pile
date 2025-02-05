@@ -30,6 +30,7 @@ int main(int argc, char *argv[])
             return 1;
         }
 
+        /* Assembleur --> Hex */
         AsmHex assembleur;
         initAsmHex(&assembleur);
 
@@ -37,11 +38,13 @@ int main(int argc, char *argv[])
 
         asmVersHex(&assembleur, argv[i]);
 
+        free_asm(&assembleur);
+
         printf("Traduction terminée %s.\n", argv[i]);
-        
+
         fclose(input);
         fclose(output);
     }
-    
+
     return 0;
 }

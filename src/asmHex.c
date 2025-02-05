@@ -9,7 +9,6 @@ D'où son nom explicite, asmHex
 void initAsmHex(AsmHex *assembleur)
 {
     assembleur->etiquettes = NULL;
-    assembleur->instructions = NULL;
     return;
 }
 
@@ -140,7 +139,8 @@ void tondre_etiq_ligne(char *ligne)
     }
 
     /* Pas de ':' ne rien faire */
-    if (deux_points == 'n') return;
+    if (deux_points == 'n')
+        return;
 
     /* On passe la tondeuse sur l'étiquette (avant ':') */
     i = 0;
@@ -167,7 +167,8 @@ int ligne_est_vide(char *ligne)
 {
     while (*ligne)
     {
-        if (*ligne != '\n' && *ligne != ' ' && *ligne != '\t') return 0;
+        if (*ligne != '\n' && *ligne != ' ' && *ligne != '\t')
+            return 0;
         ligne++;
     }
     return 1;
@@ -190,7 +191,8 @@ void trouve_etiquettes(AsmHex *assembleur, const char *_fichier)
     while (fgets(ligne, sizeof(ligne), fichier))
     {
         /* Passe à la ligne suivant si la ligne est vide */
-        if (ligne_est_vide(ligne) == 1) continue;
+        if (ligne_est_vide(ligne) == 1)
+            continue;
 
         num_ligne++;
 
@@ -255,13 +257,14 @@ void asmVersHex(AsmHex *assembleur, const char *_fichierAsm)
 
     while (fgets(ligne, sizeof(ligne), fichier))
     {
-        
+
         /* Passe à la ligne suivant si la ligne est vide */
-        if (ligne_est_vide(ligne) == 1) continue;
+        if (ligne_est_vide(ligne) == 1)
+            continue;
 
         /* Supprime les espaces/tabulations d'une étiquette peu importe le nombre */
         tondre_etiq_ligne(ligne);
-        
+
         num_ligne++;
 
         char instr_assem[32], etiquette[32], etiquette2[32];
@@ -347,4 +350,20 @@ void asmVersHex(AsmHex *assembleur, const char *_fichierAsm)
 
     fclose(fichier);
     fclose(hexaTxt);
+}
+
+/* Libère la mémoire de l'assembleur */
+void free_asm(AsmHex *assembleur)
+{
+    Etiquette *p = assembleur->etiquettes;
+    Etiquette *q;
+
+    while (p != NULL)
+    {
+        q = p->next;
+        free(p);
+        p = q;
+    }
+    
+    assembleur->etiquettes = NULL;
 }
