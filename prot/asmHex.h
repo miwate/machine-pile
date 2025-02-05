@@ -1,32 +1,45 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
 #ifndef ASMHEX_H
     #define ASMHEX_H
 
     /* Fichier d'en-tête */
     /* Assembleur vers Hexadécimal */
 
-    #include <stdio.h>
-    #include <string.h>
-
-    /* Structures */
-    typedef struct instruction {
+    /* -- Structures -- */
+    typedef struct instructionHex {
         char code_num;
         int adr_valeur;
-    } Instruction;
+    } InstructionHex;
 
     typedef struct etiquette {
         char nom_etiq[32];
         int ligne;
+        struct etiquette* next;
     } Etiquette;
 
+    /* On va l'appeler assembleur ensuite */
+    typedef struct asmHex {
+        struct etiquette* etiquettes;
+        struct instructionHex* instructions;
+    } AsmHex ;
+    
 
-    /* Variables externes */
-    extern Etiquette etiq_list[512];
-    extern int nombre_etiq;
+    /* -- Prototypes de fonctions -- */
+    
+    /* Initialisation */
+    void initAsmHex(AsmHex* assembleur);
 
-    /* Prototypes de fonctions */
-    int get_ligne(const char* _nom_etiq);
-    void ajout_etiq_list(const char* _nom_etiq, const int _adr);
-    Instruction asm_vers_hex(const char* _instr_assem, const int _valeur);
+    /* Trouve les étiquettes, ou plutôt cherche les étiquettes */
+    void trouve_etiquettes(AsmHex* assembleur, const char* _fichier);
+
+    /* Retrouver la ligne d'une étiquette */
+    int getLigne(AsmHex* assembleur, Etiquette* etiquette);
+    
+    /* */
+    InstructionHex asmVersHex(const char* _instr_assem, const int _valeur);
 
 
 #endif

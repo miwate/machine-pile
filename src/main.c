@@ -22,27 +22,11 @@ int main(int argc, char *argv[]){
             return 1;
         }
 
-        char ligne[127];
+        
         char erreur = 0;
-        int num_ligne = 0;
 
-        /* On récupère les étiquettes */
-        while (fgets(ligne, sizeof(ligne), input)){
-            num_ligne++;
 
-            if (strchr(ligne, ':')){
-                char etiquette[32];
-                if (sscanf(ligne, "%31[^:]:", etiquette) == 1){
-
-                    printf("%s.\n", etiquette);
-                    ajout_etiq_list(etiquette, num_ligne);
-                }
-                continue;
-            }
-        }
-
-        rewind(input);
-        num_ligne = 0;
+        
 
         /* On convertit en code machine */
         while (fgets(ligne, sizeof(ligne), input)){

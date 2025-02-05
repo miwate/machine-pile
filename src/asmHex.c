@@ -1,27 +1,16 @@
 #include "../prot/asmHex.h"
 
-/* Définition des variables globales */
-Etiquette etiq_list[512];
-int nombre_etiq = 0;
-
-/* Récupérer la ligne d'une étiquette */
-int get_ligne(const char* _nom_etiq){
-    for (int i=0; i<nombre_etiq; i++){
-        if (strcmp(etiq_list[i].nom_etiq, _nom_etiq) == 0) return etiq_list[i].ligne;
-    }
-    return -1;
+/* Initialisation */
+void initAsmHex(AsmHex* assembleur){
+    assembleur->etiquettes = NULL;
+    assembleur->instructions = NULL;
+    return;
 }
 
-/* Fonction pour garder étiquette en mémoire */
-void ajout_etiq_list(const char* _nom_etiq, const int _adr) {
-    strcpy(etiq_list[nombre_etiq].nom_etiq, _nom_etiq);
-    etiq_list[nombre_etiq].ligne = _adr;
-    nombre_etiq++;
-}
 
 /* Convertir une instruction assembleur vers instruction machine */
-Instruction asm_vers_hex(const char* _instr_assem, const int _valeur) {
-    Instruction instr_machine = {-1, _valeur};
+InstructionHex asm_vers_hex(const char* _instr_assem, const int _valeur) {
+    InstructionHex instr_machine = {-1, _valeur};
 
     if (strcmp(_instr_assem, "pop") == 0) {
         instr_machine.code_num = 0;
@@ -70,4 +59,52 @@ Instruction asm_vers_hex(const char* _instr_assem, const int _valeur) {
     }
 
     return instr_machine;
+}
+
+
+
+/* Trouve les étiquettes d'un code assembleur */
+void trouve_etiquettes(AsmHex* assembleur, const char* _fichier){
+    FILE* fichier = fopen(_fichier, "r");
+    if (fichier == NULL){
+        printf("Fichier %s introuvable.\n", _fichier);
+        return;
+    }
+    
+    /* On récupère les étiquettes */
+    int num_ligne = 0;
+    char ligne[127];
+
+    
+    while (fgets(ligne, sizeof(ligne), fichier)){
+        num_ligne++;
+
+        if (strchr(ligne, ':')){
+            char etiquette[32];
+
+            if (sscanf(ligne, "%31[^:]:", etiquette) == 1){
+                printf("Étiquette [%s].\n", etiquette);
+
+                /* On sauvegarde l'étiquette dans l'assembleur */
+                Etiquette* etiq = malloc(sizeof(Etiquette));
+                if (etiq == NULL){
+                    printf("Alloc mémoire impossible.\n");
+                    fclose(fichier);
+                    return;
+                }
+
+                /* Copie du nom, puis de sa ligne */
+                strncpy(etiq->nom_etiq, etiquette, sizeof(etiq->nom_etiq)-1);
+                etiq->nom_etiq[sizeof(etiq->nom_etiq)-1] = '\0';
+                etiq->ligne = num_ligne;
+
+                /* Insertion de l'étiquette dans pile */
+                etiq->next = assembleur->etiquettes;
+                assembleur->etiquettes = etiq;
+
+            }
+            continue;
+        }
+    }
+    fclose(fichier);
 }
