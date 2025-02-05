@@ -2,16 +2,16 @@
 #include <string.h>
 #include <stdlib.h>
 
+
+/* Code assembleur vers Hexadécimal */
 #ifndef ASMHEX_H
     #define ASMHEX_H
 
-    /* Fichier d'en-tête */
-    /* Assembleur vers Hexadécimal */
-
     /* -- Structures -- */
     typedef struct instructionHex {
-        char code_num;
+        int code_num;
         int adr_valeur;
+        struct instructionHex* next;
     } InstructionHex;
 
     typedef struct etiquette {
@@ -32,14 +32,13 @@
     /* Initialisation */
     void initAsmHex(AsmHex* assembleur);
 
-    /* Trouve les étiquettes, ou plutôt cherche les étiquettes */
+    /* Lit le fichier et trouve les étiquettes d'un code assembleur et empile dans l'assembleur */
     void trouve_etiquettes(AsmHex* assembleur, const char* _fichier);
 
-    /* Retrouver la ligne d'une étiquette */
-    int getLigne(AsmHex* assembleur, Etiquette* etiquette);
+    /* Donne la ligne d'une étiquette */
+    int getLigne(AsmHex* assembleur, const char* _nomEtiquette);
     
-    /* */
-    InstructionHex asmVersHex(const char* _instr_assem, const int _valeur);
-
+    /* Lit le fichier et empile les instructions dans l'assembleur */
+    void asmVersHex(AsmHex *assembleur, const char *_fichierAsm);
 
 #endif

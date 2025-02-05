@@ -44,6 +44,7 @@ void simulateur(const char *input) {
     fclose(hexa);
 }
 
+/* Outdated je suis passé à une autre structure */
 Instruction assembleur(const char instr_assem[], const int16_t valeur) {
     Instruction instr_machine = {-1, valeur};
 
