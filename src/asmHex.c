@@ -104,6 +104,64 @@ InstructionHex asm_vers_hex(const char *_instr_assem, const int _valeur)
     return instr_machine;
 }
 
+/* Supprime les espaces et tabulations d'une chaîne de caractères */
+void tondre_chaine(char *chaine)
+{
+    int i = 0, j = 0;
+
+    /* On passe la tondeuse */
+    while (chaine[i])
+    {
+        if (chaine[i] != ' ' && chaine[i] != '\t')
+        {
+            chaine[j] = chaine[i];
+            j++;
+        }
+        i++;
+    }
+    chaine[j] = '\0';
+}
+
+/* Supprime les espaces et tabulations d'une étiquette mais garde la ligne intacte */
+void tondre_etiq_ligne(char *ligne)
+{
+    int i = 0, j = 0;
+    char deux_points = 'n';
+
+    /* On vérifie si la ligne contient ':' */
+    while (ligne[i])
+    {
+        if (ligne[i] == ':')
+        {
+            deux_points = 'o';
+            break;
+        }
+        i++;
+    }
+
+    /* Pas de ':' ne rien faire */
+    if (deux_points == 'n') return;
+
+    /* On passe la tondeuse sur l'étiquette (avant ':') */
+    i = 0;
+    while (ligne[i] && ligne[i] != ':')
+    {
+        if (ligne[i] != ' ' && ligne[i] != '\t')
+        {
+            ligne[j++] = ligne[i];
+        }
+        i++;
+    }
+
+    /* Le reste */
+    while (ligne[i])
+    {
+        ligne[j++] = ligne[i++];
+    }
+
+    ligne[j] = '\0';
+}
+
 /* Lit le fichier et trouve les étiquettes d'un code assembleur et empile dans l'assembleur */
 void trouve_etiquettes(AsmHex *assembleur, const char *_fichier)
 {
@@ -128,6 +186,10 @@ void trouve_etiquettes(AsmHex *assembleur, const char *_fichier)
 
             if (sscanf(ligne, "%31[^:]:", etiquette) == 1)
             {
+
+                /* Supprimer les espaces bizarres et tabulations bizarres en cas de sujet bizarre */
+                tondre_chaine(etiquette);
+
                 printf("Étiquette [%s].\n", etiquette);
 
                 /* On sauvegarde l'étiquette dans l'assembleur */
@@ -179,6 +241,10 @@ void asmVersHex(AsmHex *assembleur, const char *_fichierAsm)
 
     while (fgets(ligne, sizeof(ligne), fichier))
     {
+
+        /* Supprime les espaces/tabulations d'une étiquette peu importe le nombre */
+        tondre_etiq_ligne(ligne);
+        
         num_ligne++;
 
         char instr_assem[32], etiquette[32], etiquette2[32];

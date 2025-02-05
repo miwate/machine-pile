@@ -41,4 +41,10 @@
     /* Lit le fichier et empile les instructions dans l'assembleur */
     void asmVersHex(AsmHex *assembleur, const char *_fichierAsm);
 
+    /* Supprime les espaces et tabulations d'une chaîne de caractères */
+    void tondre_chaine(char *chaine);
+
+    /* Supprime les espaces et tabulations d'une étiquette mais garde la ligne intacte */
+    void tondre_etiq_ligne(char *ligne);
+
 #endif
