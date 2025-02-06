@@ -23,14 +23,14 @@ int getLigne(AsmHex *assembleur, const char *_nomEtiquette)
     {
         if (strcmp(etiq->nom_etiq, _nomEtiquette) == 0)
         {
-            printf("Étiquette [%s] ligne %d.\n", _nomEtiquette, etiq->ligne);
+            printf("[Assembleur] Étiquette [%s] ligne %d.\n", _nomEtiquette, etiq->ligne);
             return etiq->ligne;
         }
 
         etiq = etiq->next;
     }
 
-    printf("Étiquette %s introuvable.\n", _nomEtiquette);
+    printf("[Assembleur] Étiquette %s introuvable.\n", _nomEtiquette);
     return 0;
 }
 
@@ -180,7 +180,7 @@ void trouve_etiquettes(AsmHex *assembleur, const char *_fichier)
     FILE *fichier = fopen(_fichier, "r");
     if (fichier == NULL)
     {
-        printf("Fichier %s introuvable.\n", _fichier);
+        printf("[Assembleur] Fichier %s introuvable.\n", _fichier);
         return;
     }
 
@@ -206,13 +206,13 @@ void trouve_etiquettes(AsmHex *assembleur, const char *_fichier)
                 /* Supprimer les espaces bizarres et tabulations bizarres en cas de sujet bizarre */
                 tondre_chaine(etiquette);
 
-                printf("Étiquette [%s].\n", etiquette);
+                printf("[Assembleur] Étiquette [%s].\n", etiquette);
 
                 /* On sauvegarde l'étiquette dans l'assembleur */
                 Etiquette *etiq = malloc(sizeof(Etiquette));
                 if (etiq == NULL)
                 {
-                    printf("Alloc mémoire impossible.\n");
+                    printf("[Assembleur] Alloc mémoire impossible.\n");
                     fclose(fichier);
                     return;
                 }
@@ -239,14 +239,14 @@ void asmVersHex(AsmHex *assembleur, const char *_fichierAsm)
     FILE *fichier = fopen(_fichierAsm, "r");
     if (fichier == NULL)
     {
-        printf("Fichier %s introuvable.\n", _fichierAsm);
+        printf("[Assembleur] Fichier %s introuvable.\n", _fichierAsm);
         return;
     }
 
     FILE *hexaTxt = fopen("hexa.txt", "w");
     if (hexaTxt == NULL)
     {
-        printf("hexa.txt introuvable.\n");
+        printf("[Assembleur] hexa.txt introuvable.\n");
         return;
     }
 
@@ -340,12 +340,26 @@ void asmVersHex(AsmHex *assembleur, const char *_fichierAsm)
             }
             fprintf(hexaTxt, "%02x %04x\n", instruct.code_num, instruct.adr_valeur & 0xFFFF);
         }
+
+        /* Cas : instruction seulement */
+        else if (sscanf(ligne, "%31s", instr_assem) == 1)
+        {
+            InstructionHex instruct = asm_vers_hex(instr_assem, 0);
+
+            if (instruct.code_num == -1)
+            {
+                erreur = 'o';
+                break;
+            }
+            fprintf(hexaTxt, "%02x %04x\n", instruct.code_num, instruct.adr_valeur & 0xFFFF);
+        }
     }
+    
 
     if (erreur == 'o')
     {
         remove("hexa.txt");
-        printf("Arrêt.\n");
+        printf("[Assembleur] Erreur.\n");
     }
 
     fclose(fichier);

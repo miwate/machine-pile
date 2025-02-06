@@ -15,20 +15,6 @@ int main(int argc, char *argv[])
 
     for (int i = 1; i < argc; i++)
     {
-        FILE *input = fopen(argv[i], "r");
-        if (input == NULL)
-        {
-            printf("Erreur - Fichier non trouvé : %s.\n", argv[i]);
-            return 1;
-        }
-
-        FILE *output = fopen("hexa.txt", "w");
-        if (output == NULL)
-        {
-            printf("Erreur - Écriture impossible : hexa.txt.\n");
-            fclose(input);
-            return 1;
-        }
 
         /* Assembleur --> Hex */
         AsmHex assembleur;
@@ -41,9 +27,7 @@ int main(int argc, char *argv[])
         free_asm(&assembleur);
 
         printf("Traduction terminée %s.\n", argv[i]);
-
-        fclose(input);
-        fclose(output);
+        
     }
 
     return 0;
