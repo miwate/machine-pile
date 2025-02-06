@@ -165,7 +165,7 @@ void tondre_etiq_ligne(char *ligne)
 /* Si la ligne est vide, renvoie 1, sinon 0 */
 int ligne_est_vide(char *ligne)
 {
-    while (*ligne)
+    while (*ligne)                      // donc si la ligne est completement vide jsute \0 alors on return direct
     {
         if (*ligne != '\n' && *ligne != ' ' && *ligne != '\t')
             return 0;
