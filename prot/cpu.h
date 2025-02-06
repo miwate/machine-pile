@@ -12,8 +12,7 @@ typedef struct processeur
     int PC;
     int SP;
     int memoire[5000];
-    int sommet_pile;
-
+    
 } Processeur;
 
 /* -- Protoytpes de fonctions -- */
