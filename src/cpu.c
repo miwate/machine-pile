@@ -86,11 +86,59 @@ void ret(Processeur *cpu){
 }
 
 void read(Processeur *cpu,int x){
-    if (x< 0 || x >5000){
+    if (x< 0 || x >=5000){
         fprintf(stderr,"Erreur, l'adresse indique ne rentre pas dans la zone memoire de la pile\n");
         exit(1);
     }
     printf("Entrez une valeur pour l'adresse %d : ",x);
     scanf("%d",&(cpu->memoire[x]));
+
+}
+
+void write(Processeur *cpu,int x){
+	printf("valeur de la variable à l'adresse%d : %d ", x,cpu->memoire[x]);
+	
+}
+
+void randx(Processeur *cpu,int x){
+    if (cpu->SP>=5000){
+        fprintf(stderr,"Erreur, la pile est pleine, impossible d'empiler.\n");
+        exit(1);
+    }
+	 if (x <= 0) {
+        fprintf(stderr,"limite invalide x doit etre strictement superieur a 1.\n"); //on ne peut pas prendre en nombre aléatoire entre 0 et négatif
+        exit(1);
+    }
+	int valalea = rand()% x;
+	cpu->memoire[cpu->SP] = valalea;
+    cpu->SP++;
+
+}
+
+void dup(Processeur *cpu){
+    if (cpu->SP>=5000){
+        fprintf(stderr,"Erreur, la pile est pleine, impossible de dupliquer et d'empiler.\n");
+        exit(1);
+    }
+    if (cpu->SP==0){
+        fprintf(stderr," la pile est vide on ne duplique rien.\n");
+        exit(1);
+    }
+	cpu->memoire[cpu->SP] = cpu->memoire[cpu->SP - 1]; 
+    cpu->SP++; 
+
+}
+
+void op(Processeur *cpu,int i){
+    switch(i){
+        case 0 : 
+            cpu->SP--;
+            int x=cpu->SP-1;
+            if (cpu->memoire[cpu->SP]==cpu->memoire[x]){
+                cpu->memoire[x]=1;
+            }else{
+                cpu->memoire[x]=0;
+            }
+    }
 
 }
