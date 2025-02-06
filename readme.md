@@ -1,22 +1,25 @@
 # Petit Tuto Git
 
-## Commandes essentielles
+## Mettre à jour son projet local
+   ```git pull origin main```
+
+## Envoyer ses modifications
 
 1. **Vérifier l'état du dépôt**
-   git status
+   ```git status```
 
 2. **Ajouter tous les fichiers modifiés**
-   git add .
+   ```git add .```
 
 3. **Encore vérifier l'état du dépôt**
-   git status
+   ```git status```
 
 4. **Valider les changements avec un message**
-   git commit -a -m "Message détaillé"
+   ```git commit -a -m "Message détaillé"```
 
 5. ** Encore encore vérifier l'état du dépôt**
-   git status
+   ```git status```
 
 6. **Envoyer les modifications vers le dépôt distant**
-   git push
+   ```git push```
 
