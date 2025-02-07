@@ -1,5 +1,10 @@
 #include <../prot/cpu.h>
 
+int tronquer(int valeur){
+    short resultat= (short)(valeur % 65536);  /*(%)on prend les 16bits de poids faible car de -32768 - 32767 il y a 65536 valeurs, on met short pour le bit de signe attention il faut (short)*/ 
+    printf("warning : Perte de précision, valeur tronquée à %d\n", resultat);
+    return resultat;
+}
 
 /* Met le contenu du haut de la pile à l’adresse x et décrémente SP*/
 void pop(Processeur *cpu, int x)
@@ -131,14 +136,220 @@ void dup(Processeur *cpu){
 
 void op(Processeur *cpu,int i){
     switch(i){
-        case 0 : 
+        case 0 :{  /*je met des {} apres chaque case pour que x soit local à chaque case sinon erreur*/
+            if (cpu->SP<2){
+                fprintf(stderr,"Erreur, pas assez de valeurs sur la pile .\n");
+                exit(1);
+            } 
             cpu->SP--;
             int x=cpu->SP-1;
-            if (cpu->memoire[cpu->SP]==cpu->memoire[x]){
+            if (cpu->memoire[x]==cpu->memoire[cpu->SP]){
                 cpu->memoire[x]=1;
             }else{
                 cpu->memoire[x]=0;
             }
-    }
+            break;
+        }
 
+        case 1 :{
+            if (cpu->SP<2){
+                fprintf(stderr,"Erreur, pas assez de valeurs sur la pile .\n");
+                exit(1);
+            }  
+            cpu->SP--;
+            int x=cpu->SP-1;
+            if (cpu->memoire[x]!=cpu->memoire[cpu->SP]){
+                cpu->memoire[x]=1;
+            }else{
+                cpu->memoire[x]=0;
+            }
+            break;
+        }
+
+        case 2 :
+            if (cpu->SP<2){
+                fprintf(stderr,"Erreur, pas assez de valeurs sur la pile .\n");
+                exit(1);
+            } 
+            cpu->SP--;
+            int x=cpu->SP-1;
+            if (cpu->memoire[x]>=cpu->memoire[cpu->SP]){
+                cpu->memoire[x]=1;
+            }else{
+                cpu->memoire[x]=0;
+            }
+            break;
+        case 3 :{
+            if (cpu->SP<2){
+                fprintf(stderr,"Erreur, pas assez de valeurs sur la pile .\n");
+                exit(1);
+            } 
+            cpu->SP--;
+            int x=cpu->SP-1;
+            if (cpu->memoire[x]<=cpu->memoire[cpu->SP]){
+                cpu->memoire[x]=1;
+            }else{
+                cpu->memoire[x]=0;
+            }
+            break;
+        }
+        case 4 :{
+            if (cpu->SP<2){
+                fprintf(stderr,"Erreur, pas assez de valeurs sur la pile .\n");
+                exit(1);
+            }
+            cpu->SP--;
+            int x=cpu->SP-1;
+            if (cpu->memoire[x]>cpu->memoire[cpu->SP]){
+                cpu->memoire[x]=1;
+            }else{
+                cpu->memoire[x]=0;
+            }
+            break;
+        }
+
+        case 5 :{
+            if (cpu->SP<2){
+                fprintf(stderr,"Erreur, pas assez de valeurs sur la pile .\n");
+                exit(1);
+            }
+            cpu->SP--;
+            int x=cpu->SP-1;
+            if (cpu->memoire[x]<cpu->memoire[cpu->SP]){
+                cpu->memoire[x]=1;
+            }else{
+                cpu->memoire[x]=0;
+            }
+            break;
+        }
+        case 6 :{
+            if (cpu->SP<2){
+                fprintf(stderr,"Erreur, pas assez de valeurs sur la pile .\n");
+                exit(1);
+            }
+            cpu->SP--;
+            int x=cpu->SP-1;
+            cpu->memoire[x]=cpu->memoire[x]|cpu->memoire[cpu->SP];
+            break;
+        }
+        case 7 :{
+            if (cpu->SP<2){
+                fprintf(stderr,"Erreur, pas assez de valeurs sur la pile .\n");
+                exit(1);
+            }
+            cpu->SP--;
+            int x=cpu->SP-1;
+            cpu->memoire[x]=cpu->memoire[x]^cpu->memoire[cpu->SP];
+            break;
+        }
+        case 8 :{
+            if (cpu->SP<2){
+                fprintf(stderr,"Erreur, pas assez de valeurs sur la pile .\n");
+                exit(1);
+            }
+            cpu->SP--;
+            int x=cpu->SP-1;
+            cpu->memoire[x]=cpu->memoire[x]&cpu->memoire[cpu->SP];
+            break;
+        }
+
+        case 9 :{
+            if (cpu->SP<1){
+                fprintf(stderr,"Erreur, pas assez de valeurs sur la pile .\n");
+                exit(1);
+            }
+            int x=cpu->SP-1;
+            cpu->memoire[x]= ~cpu->memoire[x];
+            break;
+        }
+        case 10 :{
+            if (cpu->SP<2){
+                fprintf(stderr,"Erreur, pas assez de valeurs sur la pile .\n");
+                exit(1);
+            }
+            cpu->SP--;
+            int x=cpu->SP-1;
+            int a = cpu->memoire[x];
+            int b = cpu->memoire[cpu->SP];
+            int val=a+b;
+            if (val< -32768 || val> 32767){ /*on verifie si ça sort des limites des 2bits*/
+                cpu->memoire[x]= tronquer(val);
+            }else{
+               cpu->memoire[x]=val;
+            }  
+            break;
+        }
+        case 11 :{
+            if (cpu->SP<2){
+                fprintf(stderr,"Erreur, pas assez de valeurs sur la pile .\n");
+                exit(1);
+            }
+            cpu->SP--;
+            int x=cpu->SP-1;
+            int a = cpu->memoire[x];
+            int b = cpu->memoire[cpu->SP];
+            int val=a-b;
+            if (val< -32768 || val> 32767){ /*on verifie si ça sort des limites des 2bits*/
+                cpu->memoire[x]= tronquer(val);
+            }else{
+               cpu->memoire[x]=val;
+            }
+            break;
+        }
+        case 12 :{
+            if (cpu->SP<2){
+                fprintf(stderr,"Erreur, pas assez de valeurs sur la pile .\n");
+                exit(1);
+            }
+            cpu->SP--;
+            int x=cpu->SP-1;
+            int a = cpu->memoire[x];
+            int b = cpu->memoire[cpu->SP];
+            int val=a*b;
+            if (val< -32768 || val> 32767){ /*on verifie si ça sort des limites des 2bits*/
+                cpu->memoire[x]= tronquer(val);
+            }else{
+               cpu->memoire[x]=val;
+            }  
+            break;
+        }
+        case 13 :{
+            if (cpu->SP<2){
+                fprintf(stderr,"Erreur, pas assez de valeurs sur la pile .\n");
+                exit(1);
+            }
+            cpu->SP--;
+            int x=cpu->SP-1;
+            int a = cpu->memoire[x];
+            int b = cpu->memoire[cpu->SP];
+            if (b==0){
+                fprintf(stderr,"Erreur, division par zero \n");
+                exit(1);
+            }
+            int val=a/b;
+            if (val< -32768 || val> 32767){ /*on verifie si ça sort des limites des 2bits*/
+                cpu->memoire[x]= tronquer(val);
+            }else{
+               cpu->memoire[x]=val;  
+            break;
+        }
+        case 14 :{
+            if (cpu->SP<2){
+                fprintf(stderr,"Erreur, pas assez de valeurs sur la pile .\n");
+                exit(1);
+            }
+            cpu->SP--;
+            int x=cpu->SP-1;
+            int a = cpu->memoire[x];
+            int b = cpu->memoire[cpu->SP];
+            int val=a%b;
+            if (val< -32768 || val> 32767){ /*on verifie si ça sort des limites des 2bits*/
+                cpu->memoire[x]= tronquer(val);
+            }else{
+               cpu->memoire[x]=val;
+            }
+            break;
+        }
+    }
+}
 }
