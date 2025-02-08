@@ -47,6 +47,11 @@ void write(Processeur *cpu,int x);
 void randx(Processeur *cpu,int x);
 
 void dup(Processeur *cpu);
-
+void halt(void );
 void op(Processeur *cpu,int i);
+void call(Processeur *cpu,int adr);
+void executerHexa(Processeur *cpu,int valeur,int instruction);
+void lireExec(const char *nomFichier, Processeur *cpu);
+
+
 #endif

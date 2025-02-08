@@ -1,5 +1,6 @@
 #include <../prot/cpu.h>
 
+
 int tronquer(int valeur){
     short resultat= (short)(valeur % 65536);  /*(%)on prend les 16bits de poids faible car de -32768 - 32767 il y a 65536 valeurs, on met short pour le bit de signe attention il faut (short)*/ 
     printf("warning : Perte de précision, valeur tronquée à %d\n", resultat);
@@ -79,6 +80,15 @@ void jnz(Processeur *cpu, int adr)
     }
 }
 
+void call(Processeur *cpu,int adr){
+    if (cpu->SP>=5000){
+        fprintf(stderr,"Erreur, la pile est pleine, impossible d'empiler PC.\n");
+        exit(1);
+    }
+    cpu->memoire[cpu->SP] = cpu->PC;
+    cpu->PC=cpu->PC + adr; 
+}
+
 void ret(Processeur *cpu){
     if (cpu->SP==0){
         fprintf(stderr,"Erreur, la pile est vide, impossible de depiler.\n");
@@ -96,9 +106,15 @@ void read(Processeur *cpu,int x){
         exit(1);
     }
     printf("Entrez une valeur pour l'adresse %d : ",x);
-    scanf("%d",&(cpu->memoire[x]));
-
+    int y;
+    scanf("%d",&y);
+    if (y< -32768 || y> 32767){ /*on verifie si ça sort des limites des 2bits*/
+        cpu->memoire[x]= tronquer(y);
+    }else{
+        cpu->memoire[x]=y;  
+    }
 }
+        
 
 void write(Processeur *cpu,int x){
 	printf("valeur de la variable à l'adresse%d : %d ", x,cpu->memoire[x]);
@@ -114,8 +130,8 @@ void randx(Processeur *cpu,int x){
         fprintf(stderr,"limite invalide x doit etre strictement superieur a 1.\n"); //on ne peut pas prendre en nombre aléatoire entre 0 et négatif
         exit(1);
     }
-	int valalea = rand()% x;
-	cpu->memoire[cpu->SP] = valalea;
+	int valAlea = rand()% x;
+	cpu->memoire[cpu->SP] = valAlea;
     cpu->SP++;
 
 }
@@ -132,6 +148,11 @@ void dup(Processeur *cpu){
 	cpu->memoire[cpu->SP] = cpu->memoire[cpu->SP - 1]; 
     cpu->SP++; 
 
+}
+
+void halt(void ){
+    fprintf(stderr,"fin de l'exectution du programme\n");
+    exit(1);
 }
 
 void op(Processeur *cpu,int i){
@@ -332,6 +353,7 @@ void op(Processeur *cpu,int i){
             }else{
                cpu->memoire[x]=val;  
             break;
+            }
         }
         case 14 :{
             if (cpu->SP<2){
@@ -350,6 +372,94 @@ void op(Processeur *cpu,int i){
             }
             break;
         }
+        case 15 : {
+            if (cpu->SP==0){
+                fprintf(stderr,"Erreur,pile vide pas possible d'inverser la valeur du sommet .\n");
+                exit(1);
+            }
+            int x=cpu->SP-1;
+            cpu->memoire[x]=-cpu->memoire[x];
+            break;
+        }
+        default : 
+            fprintf(stderr,"code operation <0 ou >15 .\n");
+            exit(1);
+
+
     }
 }
+
+
+void executerHexa(Processeur *cpu,int valeur,int instruction){
+    switch (instruction){
+        case 0x00 : 
+            pop(cpu,valeur);
+            break;
+        case 0x01 :
+            ipop(cpu);
+            break;
+        case 0x02 : 
+            push(cpu,valeur);
+            break;
+        case 0x03 :
+            jpush(cpu);
+            break;
+        case 0x04 : 
+            pushi(cpu,valeur);
+            break;
+        case 0x05 :
+            jmp(cpu,valeur);
+            break;
+        case 0x06 : 
+            jnz(cpu,valeur);
+            break;
+        case 0x07 :
+            call(cpu,valeur);
+            break;
+        case 0x08 : 
+            ret(cpu);
+            break;
+        case 0x09 :
+            read(cpu,valeur);
+            break;
+        case 0x0a : 
+            write(cpu,valeur);
+            break;
+        case 0x0b :
+            op(cpu,valeur);
+            break;
+        case 0x0c : 
+            randx(cpu,valeur);
+            break;
+        case 0x0d :
+            dup(cpu);
+            break;
+        case 0x63 : 
+            halt();
+            break;
+        default : fprintf(stderr,"code operation <0 ou >15 .\n");
+        exit(1);
+    }
 }
+
+void lireExec(const char *nomFichier, Processeur *cpu){
+    FILE *f=fopen(nomFichier,"r");
+    if (!f) {
+        fprintf(stderr, "Erreur d'ouverture du fichier %s\n",nomFichier);
+        exit(1);
+    }
+    int instruction,valeur;
+    while (fscanf(f, "%2x %4x", &instruction, &valeur)==2) {
+        executerHexa(cpu,valeur, instruction);
+        cpu->PC++;  
+    }
+
+    fclose(f);
+}
+
+/*int main(){
+    Processeur cpu;
+    cpu.SP=0;
+    cpu.PC=0;
+    lireExec("hexa.txt",&cpu);
+}*/
