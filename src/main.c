@@ -27,7 +27,7 @@ int main(int argc, char *argv[])
 
         free_asm(&assembleur);
 
-        printf("Traduction terminée %s.\n", argv[i]);
+        //printf("Traduction terminée %s.\n", argv[i]);
 
         /* Hex --> CPU */
         Processeur cpu;

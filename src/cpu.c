@@ -3,7 +3,7 @@
 int tronquer(int valeur)
 {
     short resultat = (short)(valeur % 65536); /*(%)on prend les 16bits de poids faible car de -32768 - 32767 il y a 65536 valeurs, on met short pour le bit de signe attention il faut (short)*/
-    printf("warning : Perte de précision, valeur tronquée à %d\n", resultat);
+    printf("[CPU] Warning : Perte de précision, valeur tronquée à %d\n", resultat);
     return resultat;
 }
 
@@ -12,7 +12,7 @@ void pop(Processeur *cpu, int x)
 {
     if (cpu->SP == 0)
     {
-        fprintf(stderr, "Erreur, la pile est vide, impossible de depiler.\n");
+        fprintf(stderr, "[CPU] Erreur, la pile est vide, impossible de depiler.\n");
         exit(1);
     }
     cpu->SP--;
@@ -24,7 +24,7 @@ void ipop(Processeur *cpu)
 {
     if (cpu->SP == 0)
     {
-        fprintf(stderr, "Erreur, la pile est vide, impossible de depiler.\n");
+        fprintf(stderr, "[CPU] Erreur, la pile est vide, impossible de depiler.\n");
         exit(1);
     }
     cpu->SP -= 2;
@@ -37,7 +37,7 @@ void push(Processeur *cpu, int x)
 {
     if (cpu->SP >= 5000)
     {
-        fprintf(stderr, "Erreur, la pile est pleine, impossible d'empiler.\n");
+        fprintf(stderr, "[CPU] Erreur, la pile est pleine, impossible d'empiler.\n");
         exit(1);
     }
     cpu->memoire[cpu->SP] = cpu->memoire[x];
@@ -48,7 +48,7 @@ void jpush(Processeur *cpu)
 {
     if (cpu->SP >= 5000)
     {
-        fprintf(stderr, "Erreur, la pile est pleine, impossible d'empiler.\n");
+        fprintf(stderr, "[CPU] Erreur, la pile est pleine, impossible d'empiler.\n");
         exit(1);
     }
     int x;
@@ -61,7 +61,7 @@ void pushi(Processeur *cpu, int i)
 {
     if (cpu->SP >= 5000)
     {
-        fprintf(stderr, "Erreur, la pile est pleine, impossible d'empiler.\n");
+        fprintf(stderr, "[CPU] Erreur, la pile est pleine, impossible d'empiler.\n");
         exit(1);
     }
     cpu->memoire[cpu->SP] = i;
@@ -79,7 +79,7 @@ void jnz(Processeur *cpu, int adr)
 {
     if (cpu->SP == 0)
     {
-        fprintf(stderr, "Erreur, la pile est vide, impossible de depiler.\n");
+        fprintf(stderr, "[CPU] Erreur, la pile est vide, impossible de depiler.\n");
         exit(1);
     }
     cpu->SP--;
@@ -93,7 +93,7 @@ void call(Processeur *cpu, int adr)
 {
     if (cpu->SP >= 5000)
     {
-        fprintf(stderr, "Erreur, la pile est pleine, impossible d'empiler PC.\n");
+        fprintf(stderr, "[CPU] Erreur, la pile est pleine, impossible d'empiler PC.\n");
         exit(1);
     }
     cpu->memoire[cpu->SP] = cpu->PC;
@@ -104,7 +104,7 @@ void ret(Processeur *cpu)
 {
     if (cpu->SP == 0)
     {
-        fprintf(stderr, "Erreur, la pile est vide, impossible de depiler.\n");
+        fprintf(stderr, "[CPU] Erreur, la pile est vide, impossible de depiler.\n");
         exit(1);
     }
     cpu->SP--;
@@ -115,10 +115,10 @@ void read(Processeur *cpu, int x)
 {
     if (x < 0 || x >= 5000)
     {
-        fprintf(stderr, "Erreur, l'adresse indique ne rentre pas dans la zone memoire de la pile\n");
+        fprintf(stderr, "[CPU] Erreur, l'adresse indique ne rentre pas dans la zone memoire de la pile\n");
         exit(1);
     }
-    printf("Entrez une valeur pour l'adresse %d : ", x);
+    printf("[CPU] Entrez une valeur pour l'adresse %d : ", x);
     int y;
     scanf("%d", &y);
     if (y < -32768 || y > 32767)
@@ -133,19 +133,19 @@ void read(Processeur *cpu, int x)
 
 void write(Processeur *cpu, int x)
 {
-    printf("valeur de la variable à l'adresse%d : %d ", x, cpu->memoire[x]);
+    printf("[CPU] Valeur de la variable à l'adresse %d : %d\n", x, cpu->memoire[x]);
 }
 
 void randx(Processeur *cpu, int x)
 {
     if (cpu->SP >= 5000)
     {
-        fprintf(stderr, "Erreur, la pile est pleine, impossible d'empiler.\n");
+        fprintf(stderr, "[CPU] Erreur, la pile est pleine, impossible d'empiler.\n");
         exit(1);
     }
     if (x <= 0)
     {
-        fprintf(stderr, "limite invalide x doit etre strictement superieur a 1.\n"); // on ne peut pas prendre en nombre aléatoire entre 0 et négatif
+        fprintf(stderr, "[CPU] Limite invalide x doit être strictement superieur à 1.\n"); // on ne peut pas prendre en nombre aléatoire entre 0 et négatif
         exit(1);
     }
     int valAlea = rand() % x;
@@ -157,12 +157,12 @@ void dup(Processeur *cpu)
 {
     if (cpu->SP >= 5000)
     {
-        fprintf(stderr, "Erreur, la pile est pleine, impossible de dupliquer et d'empiler.\n");
+        fprintf(stderr, "[CPU] Erreur, la pile est pleine, impossible de dupliquer et d'empiler.\n");
         exit(1);
     }
     if (cpu->SP == 0)
     {
-        fprintf(stderr, " la pile est vide on ne duplique rien.\n");
+        fprintf(stderr, "[CPU] La pile est vide on ne duplique rien.\n");
         exit(1);
     }
     cpu->memoire[cpu->SP] = cpu->memoire[cpu->SP - 1];
@@ -171,7 +171,7 @@ void dup(Processeur *cpu)
 
 void halt(void)
 {
-    fprintf(stderr, "fin de l'exectution du programme\n");
+    fprintf(stderr, "[CPU] Fin de l'exectution du programme\n");
     exit(1);
 }
 
@@ -183,7 +183,7 @@ void op(Processeur *cpu, int i)
     { /*je met des {} apres chaque case pour que x soit local à chaque case sinon erreur*/
         if (cpu->SP < 2)
         {
-            fprintf(stderr, "Erreur, pas assez de valeurs sur la pile .\n");
+            fprintf(stderr, "[CPU] Erreur, pas assez de valeurs sur la pile .\n");
             exit(1);
         }
         cpu->SP--;
@@ -203,7 +203,7 @@ void op(Processeur *cpu, int i)
     {
         if (cpu->SP < 2)
         {
-            fprintf(stderr, "Erreur, pas assez de valeurs sur la pile .\n");
+            fprintf(stderr, "[CPU] Erreur, pas assez de valeurs sur la pile .\n");
             exit(1);
         }
         cpu->SP--;
@@ -222,7 +222,7 @@ void op(Processeur *cpu, int i)
     case 2:
         if (cpu->SP < 2)
         {
-            fprintf(stderr, "Erreur, pas assez de valeurs sur la pile .\n");
+            fprintf(stderr, "[CPU] Erreur, pas assez de valeurs sur la pile .\n");
             exit(1);
         }
         cpu->SP--;
@@ -240,7 +240,7 @@ void op(Processeur *cpu, int i)
     {
         if (cpu->SP < 2)
         {
-            fprintf(stderr, "Erreur, pas assez de valeurs sur la pile .\n");
+            fprintf(stderr, "[CPU] Erreur, pas assez de valeurs sur la pile .\n");
             exit(1);
         }
         cpu->SP--;
@@ -259,7 +259,7 @@ void op(Processeur *cpu, int i)
     {
         if (cpu->SP < 2)
         {
-            fprintf(stderr, "Erreur, pas assez de valeurs sur la pile .\n");
+            fprintf(stderr, "[CPU] Erreur, pas assez de valeurs sur la pile .\n");
             exit(1);
         }
         cpu->SP--;
@@ -279,7 +279,7 @@ void op(Processeur *cpu, int i)
     {
         if (cpu->SP < 2)
         {
-            fprintf(stderr, "Erreur, pas assez de valeurs sur la pile .\n");
+            fprintf(stderr, "[CPU] Erreur, pas assez de valeurs sur la pile .\n");
             exit(1);
         }
         cpu->SP--;
@@ -298,7 +298,7 @@ void op(Processeur *cpu, int i)
     {
         if (cpu->SP < 2)
         {
-            fprintf(stderr, "Erreur, pas assez de valeurs sur la pile .\n");
+            fprintf(stderr, "[CPU] Erreur, pas assez de valeurs sur la pile .\n");
             exit(1);
         }
         cpu->SP--;
@@ -310,7 +310,7 @@ void op(Processeur *cpu, int i)
     {
         if (cpu->SP < 2)
         {
-            fprintf(stderr, "Erreur, pas assez de valeurs sur la pile .\n");
+            fprintf(stderr, "[CPU] Erreur, pas assez de valeurs sur la pile .\n");
             exit(1);
         }
         cpu->SP--;
@@ -322,7 +322,7 @@ void op(Processeur *cpu, int i)
     {
         if (cpu->SP < 2)
         {
-            fprintf(stderr, "Erreur, pas assez de valeurs sur la pile .\n");
+            fprintf(stderr, "[CPU] Erreur, pas assez de valeurs sur la pile .\n");
             exit(1);
         }
         cpu->SP--;
@@ -335,7 +335,7 @@ void op(Processeur *cpu, int i)
     {
         if (cpu->SP < 1)
         {
-            fprintf(stderr, "Erreur, pas assez de valeurs sur la pile .\n");
+            fprintf(stderr, "[CPU] Erreur, pas assez de valeurs sur la pile .\n");
             exit(1);
         }
         int x = cpu->SP - 1;
@@ -346,7 +346,7 @@ void op(Processeur *cpu, int i)
     {
         if (cpu->SP < 2)
         {
-            fprintf(stderr, "Erreur, pas assez de valeurs sur la pile .\n");
+            fprintf(stderr, "[CPU] Erreur, pas assez de valeurs sur la pile .\n");
             exit(1);
         }
         cpu->SP--;
@@ -368,7 +368,7 @@ void op(Processeur *cpu, int i)
     {
         if (cpu->SP < 2)
         {
-            fprintf(stderr, "Erreur, pas assez de valeurs sur la pile .\n");
+            fprintf(stderr, "[CPU] Erreur, pas assez de valeurs sur la pile .\n");
             exit(1);
         }
         cpu->SP--;
@@ -390,7 +390,7 @@ void op(Processeur *cpu, int i)
     {
         if (cpu->SP < 2)
         {
-            fprintf(stderr, "Erreur, pas assez de valeurs sur la pile .\n");
+            fprintf(stderr, "[CPU] Erreur, pas assez de valeurs sur la pile .\n");
             exit(1);
         }
         cpu->SP--;
@@ -412,7 +412,7 @@ void op(Processeur *cpu, int i)
     {
         if (cpu->SP < 2)
         {
-            fprintf(stderr, "Erreur, pas assez de valeurs sur la pile .\n");
+            fprintf(stderr, "[CPU] Erreur, pas assez de valeurs sur la pile .\n");
             exit(1);
         }
         cpu->SP--;
@@ -421,7 +421,7 @@ void op(Processeur *cpu, int i)
         int b = cpu->memoire[cpu->SP];
         if (b == 0)
         {
-            fprintf(stderr, "Erreur, division par zero \n");
+            fprintf(stderr, "[CPU] Erreur, division par zero \n");
             exit(1);
         }
         int val = a / b;
@@ -439,7 +439,7 @@ void op(Processeur *cpu, int i)
     {
         if (cpu->SP < 2)
         {
-            fprintf(stderr, "Erreur, pas assez de valeurs sur la pile .\n");
+            fprintf(stderr, "[CPU] Erreur, pas assez de valeurs sur la pile .\n");
             exit(1);
         }
         cpu->SP--;
@@ -461,7 +461,7 @@ void op(Processeur *cpu, int i)
     {
         if (cpu->SP == 0)
         {
-            fprintf(stderr, "Erreur,pile vide pas possible d'inverser la valeur du sommet .\n");
+            fprintf(stderr, "[CPU] Erreur, pile vide pas possible d'inverser la valeur du sommet .\n");
             exit(1);
         }
         int x = cpu->SP - 1;
@@ -469,7 +469,7 @@ void op(Processeur *cpu, int i)
         break;
     }
     default:
-        fprintf(stderr, "code operation <0 ou >15 .\n");
+        fprintf(stderr, "[CPU] code operation <0 ou >15 .\n");
         exit(1);
     }
 }
@@ -524,7 +524,7 @@ void executerHexa(Processeur *cpu, int valeur, int instruction)
         halt();
         break;
     default:
-        fprintf(stderr, "code operation <0 ou >15 .\n");
+        fprintf(stderr, "[CPU] code operation <0 ou >15 .\n");
         exit(1);
     }
 }
@@ -534,7 +534,7 @@ void lireExec(const char *nomFichier, Processeur *cpu)
     FILE *f = fopen(nomFichier, "r");
     if (!f)
     {
-        fprintf(stderr, "Erreur d'ouverture du fichier %s\n", nomFichier);
+        fprintf(stderr, "[CPU] Erreur d'ouverture du fichier %s\n", nomFichier);
         exit(1);
     }
     int instruction, valeur;

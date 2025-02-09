@@ -1,11 +1,12 @@
-        ici     : read 1000
+        ici     : read 70000
+    
     push    1000
     push#  0
 
     
     op 0
      jnz    fin
-     push 1000
+     push 5615
 
 
     op 15                        

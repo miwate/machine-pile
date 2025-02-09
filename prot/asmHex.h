@@ -32,6 +32,9 @@ typedef struct asmHex
 /* Initialisation */
 void initAsmHex(AsmHex *assembleur);
 
+/* Convertir une instruction assembleur vers instruction machine */
+InstructionHex asm_vers_hex(const char *_instr_assem, int _valeur);
+
 /* Lit le fichier et trouve les étiquettes d'un code assembleur et empile dans l'assembleur */
 void trouve_etiquettes(AsmHex *assembleur, const char *_fichier);
 
