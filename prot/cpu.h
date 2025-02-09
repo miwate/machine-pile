@@ -35,22 +35,27 @@ void jmp(Processeur *cpu, int adr);
 /* dépile un élément. Si celui-ci n’est pas nul, additionne adr au registre PC */
 void jnz(Processeur *cpu, int adr);
 
-//empile le contenu de l’adresse n, où n est la valeur du sommet de la pile ;
+// empile le contenu de l’adresse n, où n est la valeur du sommet de la pile ;
 void jpush(Processeur *cpu);
 
 void ret(Processeur *cpu);
 
-void read(Processeur *cpu,int x);
+void read(Processeur *cpu, int x);
 
-void write(Processeur *cpu,int x);
+void write(Processeur *cpu, int x);
 
-void randx(Processeur *cpu,int x);
+void randx(Processeur *cpu, int x);
 
 void dup(Processeur *cpu);
-void halt(void );
-void op(Processeur *cpu,int i);
-void call(Processeur *cpu,int adr);
-void executerHexa(Processeur *cpu,int valeur,int instruction);
+
+void halt(void);
+
+void op(Processeur *cpu, int i);
+
+
+void executerHexa(Processeur *cpu, int valeur, int instruction);
+
+
 void lireExec(const char *nomFichier, Processeur *cpu);
 
 

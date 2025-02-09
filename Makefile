@@ -5,7 +5,7 @@ PROT_DIR = prot
 OBJ_DIR = obj
 BIN = simulateur
 
-SRCS = $(SRC_DIR)/asmHex.c $(SRC_DIR)/main.c
+SRCS = $(SRC_DIR)/asmHex.c $(SRC_DIR)/cpu.c $(SRC_DIR)/main.c
 OBJS = $(SRCS:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
 
 $(BIN): $(OBJS)

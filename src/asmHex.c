@@ -23,14 +23,19 @@ int getLigne(AsmHex *assembleur, const char *_nomEtiquette)
     {
         if (strcmp(etiq->nom_etiq, _nomEtiquette) == 0)
         {
-            printf("[Assembleur] Étiquette [%s] ligne %d.\n", _nomEtiquette, etiq->ligne);
+            //printf("[Assembleur] Étiquette [%s] ligne %d.\n", _nomEtiquette, etiq->ligne);
             return etiq->ligne;
         }
 
         etiq = etiq->next;
     }
 
-    printf("[Assembleur] Étiquette %s introuvable.\n", _nomEtiquette);
+    if (trouve == 'n')
+    {
+        fprintf(stderr,"[Assembleur] Étiquette %s introuvable.\n", _nomEtiquette);
+        exit(2);
+    }
+
     return 0;
 }
 
@@ -180,7 +185,8 @@ void trouve_etiquettes(AsmHex *assembleur, const char *_fichier)
     FILE *fichier = fopen(_fichier, "r");
     if (fichier == NULL)
     {
-        printf("[Assembleur] Fichier %s introuvable.\n", _fichier);
+        fprintf(stderr ,"[Assembleur] Fichier %s introuvable.\n", _fichier);
+        exit(2);
         return;
     }
 
@@ -206,14 +212,15 @@ void trouve_etiquettes(AsmHex *assembleur, const char *_fichier)
                 /* Supprimer les espaces bizarres et tabulations bizarres en cas de sujet bizarre */
                 tondre_chaine(etiquette);
 
-                printf("[Assembleur] Étiquette [%s].\n", etiquette);
+                //printf("[Assembleur] Étiquette [%s].\n", etiquette);
 
                 /* On sauvegarde l'étiquette dans l'assembleur */
                 Etiquette *etiq = malloc(sizeof(Etiquette));
                 if (etiq == NULL)
                 {
-                    printf("[Assembleur] Alloc mémoire impossible.\n");
+                    fprintf(stderr, "[Assembleur] Allocation mémoire impossible.\n");
                     fclose(fichier);
+                    exit(2);
                     return;
                 }
 
@@ -359,7 +366,7 @@ void asmVersHex(AsmHex *assembleur, const char *_fichierAsm)
     if (erreur == 'o')
     {
         remove("hexa.txt");
-        printf("[Assembleur] Erreur.\n");
+        printf("[Assembleur] Erreur ligne %d: \"%s\".\n", num_ligne, ligne);
     }
 
     fclose(fichier);
