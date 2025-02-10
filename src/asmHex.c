@@ -283,21 +283,8 @@ void asmVersHex(AsmHex *assembleur, const char *_fichierAsm)
         char instr_assem[32], etiquette[32], etiquette2[32];
         int valeur = 0;
 
-        /* Cas : instruction valeur */
-        if (sscanf(ligne, "%31s %d", instr_assem, &valeur) == 2)
-        {
-            InstructionHex instruct = asm_vers_hex(instr_assem, valeur);
-
-            if (instruct.code_num == -1)
-            {
-                erreur = 'o';
-                break;
-            }
-            fprintf(hexaTxt, "%02x %04x\n", instruct.code_num, instruct.adr_valeur & 0xFFFF);
-        }
-
         /* Cas : étiquette instruction valeur */
-        else if (sscanf(ligne, "%31[^:]: %31s %d", etiquette, instr_assem, &valeur) == 3)
+        if (sscanf(ligne, "%31[^:]: %31s %d", etiquette, instr_assem, &valeur) == 3)
         {
             InstructionHex instruct = asm_vers_hex(instr_assem, valeur);
 
@@ -329,6 +316,19 @@ void asmVersHex(AsmHex *assembleur, const char *_fichierAsm)
         else if (sscanf(ligne, "%31[^:]: %31s", etiquette, instr_assem) == 2)
         {
             InstructionHex instruct = asm_vers_hex(instr_assem, 0);
+
+            if (instruct.code_num == -1)
+            {
+                erreur = 'o';
+                break;
+            }
+            fprintf(hexaTxt, "%02x %04x\n", instruct.code_num, instruct.adr_valeur & 0xFFFF);
+        }
+
+        /* Cas : instruction valeur */
+        else if (sscanf(ligne, "%31s %d", instr_assem, &valeur) == 2)
+        {
+            InstructionHex instruct = asm_vers_hex(instr_assem, valeur);
 
             if (instruct.code_num == -1)
             {
