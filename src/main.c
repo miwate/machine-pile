@@ -27,11 +27,14 @@ int main(int argc, char *argv[])
 
         free_asm(&assembleur);
 
-        //printf("Traduction terminée %s.\n", argv[i]);
+        printf("[Main] Traduction terminée %s.\n", argv[i]);
 
         /* Hex --> CPU */
         Processeur cpu;
         lireExec("hexa.txt", &cpu);
+
+        printf("[Main] Éxécution terminée %s.\n", argv[i]);
+
         
     }
 
