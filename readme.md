@@ -46,6 +46,8 @@ Une seule instruction par ligne sera lue par l’assembleur. Les sauts de lignes
 
 # Petit Tuto Git
 
+Pour nous, les étudiants.
+
 ## Mettre à jour son projet local
    ```git pull origin main```
 
@@ -63,7 +65,7 @@ Une seule instruction par ligne sera lue par l’assembleur. Les sauts de lignes
 4. **Valider les changements avec un message**
    ```git commit -a -m "Message détaillé"```
 
-5. ** Encore encore vérifier l'état du dépôt**
+5. **Encore encore vérifier l'état du dépôt**
    ```git status```
 
 6. **Envoyer les modifications vers le dépôt distant**
