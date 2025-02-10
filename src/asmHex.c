@@ -47,7 +47,7 @@ InstructionHex asm_vers_hex(const char *_instr_assem, int _valeur)
     if (_valeur < -32768 || _valeur > 32767)
     {
         fprintf(stderr, "[Assembleur] Warning : perte de précision %d -> %d \n", _valeur, _valeur & 0xFFFF);
-        _valeur = _valeur % 0xFFFF;
+        _valeur &= 0xFFFF;
     }
 
     if (strcmp(_instr_assem, "pop") == 0)

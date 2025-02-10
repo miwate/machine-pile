@@ -6,7 +6,7 @@
     
     op 0
      jnz    fin
-     push 5615
+     push 1000
 
 
     op 15                        
