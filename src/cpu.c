@@ -1,5 +1,17 @@
 #include "../prot/cpu.h"
 
+
+/* Initialise le cpu en mettant tout à 0 */
+void initCpu(Processeur *cpu)
+{
+    cpu->SP = 0;
+    cpu->PC = 0;
+    for (int i = 0; i < 5000; i++)
+    {
+        cpu->memoire[i] = 0;
+    }
+}
+
 int tronquer(int valeur)
 {
     short resultat = (short)(valeur % 65536); /*(%)on prend les 16bits de poids faible car de -32768 - 32767 il y a 65536 valeurs, on met short pour le bit de signe attention il faut (short)*/

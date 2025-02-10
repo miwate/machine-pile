@@ -22,20 +22,16 @@ int main(int argc, char *argv[])
         initAsmHex(&assembleur);
 
         trouve_etiquettes(&assembleur, argv[i]);
-
         asmVersHex(&assembleur, argv[i]);
-
         free_asm(&assembleur);
 
         printf("[Main] Traduction terminée %s.\n", argv[i]);
 
         /* Hex --> CPU */
         Processeur cpu;
+        initCpu(&cpu);
+
         lireExec("hexa.txt", &cpu);
-
-        printf("[Main] Éxécution terminée %s.\n", argv[i]);
-
-        
     }
 
     return 0;
