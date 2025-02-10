@@ -1,6 +1,5 @@
 #include "../prot/cpu.h"
 
-
 /* Initialise le cpu en mettant tout à 0 */
 void initCpu(Processeur *cpu)
 {
@@ -34,14 +33,15 @@ void pop(Processeur *cpu, int x)
 /* Met le contenu du haut de la pile -1 à l’adresse n, où n est la valeur du sommet de la pile décrémente SP de deux*/
 void ipop(Processeur *cpu)
 {
-    if (cpu->SP == 0)
+    if (cpu->SP < 2)
     {
-        fprintf(stderr, "[CPU] Erreur, la pile est vide, impossible de depiler.\n");
+        fprintf(stderr, "[CPU] Erreur, pas assez d'element sur al pile.\n");
         exit(1);
     }
+    int valeur = cpu->memoire[cpu->SP - 1];
+    int adresse = cpu->memoire[cpu->SP - 2];
+    cpu->memoire[adresse] = valeur;
     cpu->SP -= 2;
-    int n = cpu->memoire[cpu->SP];
-    cpu->memoire[n] = cpu->memoire[cpu->SP - 1];
 }
 
 /* empile le contenu de l’adresse x (et donc incrémente ensuite SP) */
@@ -58,14 +58,18 @@ void push(Processeur *cpu, int x)
 // empile le contenu de l’adresse n, où n est la valeur du sommet de la pile ;
 void jpush(Processeur *cpu)
 {
-    if (cpu->SP >= 5000)
+    if (cpu->SP == 0)
     {
-        fprintf(stderr, "[CPU] Erreur, la pile est pleine, impossible d'empiler.\n");
+        fprintf(stderr, "[CPU] Erreur, pile vide, impossible d'ipush.\n");
         exit(1);
     }
-    int x;
-    x = cpu->memoire[cpu->SP - 1];
-    cpu->memoire[cpu->SP - 1] = x;
+    int adresse = cpu->memoire[cpu->SP - 1];
+    if (adresse < 0 || adresse >= 5000)
+    {
+        fprintf(stderr, "[CPU] Erreur, tentative de lecture hors mémoire avec ipush.\n");
+        exit(1);
+    }
+    cpu->memoire[cpu->SP - 1] = cpu->memoire[adresse];
 }
 
 /* empile la valeur i (et donc incrémente ensuite SP) */
