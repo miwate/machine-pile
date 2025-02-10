@@ -32,7 +32,7 @@ int getLigne(AsmHex *assembleur, const char *_nomEtiquette)
 
     if (trouve == 'n')
     {
-        fprintf(stderr,"[Assembleur] Erreur : Étiquette %s introuvable.\n", _nomEtiquette);
+        fprintf(stderr,"[Assembleur] Erreur : Étiquette %s non déclarée.\n", _nomEtiquette);
         exit(2);
     }
 
