@@ -17,4 +17,4 @@
     jmp     ici
 
 
-                    fin                 :    halt
+                    fin:halt
